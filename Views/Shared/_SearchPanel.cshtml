@@ -1,0 +1,211 @@
+﻿@model List<GCC_Canteen.ViewModel.GridColumnSetting>
+
+<div class="panel-heading clearfix" id="search-title">
+    <h4 class="panel-title">Search</h4>
+</div>
+<style type="text/css">
+    a:hover {
+        cursor: pointer;
+        text-decoration: none;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/jquery.ajax.unobtrusive/3.2.3/jquery.unobtrusive-ajax.min.js"></script>
+
+@using (Ajax.BeginForm("GetSearchResult", "Search", null, new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "ctrlGrid1Panel", OnBegin = "$('#spinner').show();", OnComplete = "SetLinkURL('ctrlGrid1','ctrlGrid1Pager');callbackctrlGrid1Pager();removefooter();$('#spinner').hide();", InsertionMode = InsertionMode.Replace }, new { @class = "form-inline" }))
+{
+
+    <div style="margin-left:15px" id="search-content">
+
+        @*<form class="form-inline">*@
+
+        @Html.Hidden("PageID", Model[0].PageID)
+        @foreach (var Item in Model)
+        {
+
+            if (Item.AllowForFilter == true && Item.Tag.ToUpper() == "S" && Item.DataType.ToUpper() == "VARCHAR")
+            {
+
+                <div class="form-group" style="margin-bottom:15px">
+                    <label id="@Item.ColumnName" class="" for="@Item.ColumnName">@Item.HeaderText</label><br />
+                    @Html.TextBox(@Item.ColumnName, null, new { @style = "width:165px;", @class = "form-control", placeholder = @Item.HeaderText })
+                    @*<input id="@Item.ColumnName" class="form-control" placeholder="@Item.HeaderText" type="text">*@
+                </div>
+            }
+            else if (Item.AllowForFilter == true && Item.Tag.ToUpper() == "S" && Item.DataType.ToUpper() == "DATE")
+            {
+                <div class="form-group" style="margin-bottom:15px">
+                    <label id="@Item.ColumnName" class="" for="exampleInputPassword2">@Item.HeaderText</label><br>
+                    @Html.TextBox(@Item.ColumnName, null, "{0:d M yyyy}", new { @class = "form-control searchPanelDatepicker", placeholder = @Item.HeaderText, @style = "background:#fff;width:165px;", @onpaste = "return false;" })
+
+                    @*<input id="@Item.ColumnName" class="form-control" placeholder="@Item.HeaderText" type="text">*@
+                </div>
+
+            }
+            else if (Item.AllowForFilter == true && Item.Tag.ToUpper() == "S" && Item.DataType.ToUpper() == "MONTHDATE")
+            {
+                <div class="form-group" style="margin-bottom:15px">
+                    <label id="@Item.ColumnName" class="" for="exampleInputPassword2">@Item.HeaderText</label><br />
+                    @Html.TextBox(@Item.ColumnName, null, "{0:M yyyy}", new { @class = "form-control searchPanelMonthDatepicker", placeholder = @Item.HeaderText, @style = "background:#fff;width:165px;", @onpaste = "return false;" })
+
+                    @*<input id="@Item.ColumnName" class="form-control" placeholder="@Item.HeaderText" type="text">*@
+                </div>
+
+            }
+            else if (Item.AllowForFilter == true && Item.Tag.ToUpper() == "S" && Item.DataType.ToUpper() == "FROMDATE")
+            {
+                <div class="form-group" style="margin-bottom:15px">
+                    <label id="@Item.ColumnName" class="" for="exampleInputPassword2">@Item.HeaderText</label><br />
+                    @Html.TextBox(@Item.ColumnName, null, "{0:d M yyyy}", new { @class = "form-control searchPanelDatepicker", placeholder = @Item.HeaderText, @style = "background:#fff;width:165px;", @onpaste = "return false;" })
+
+                    @*<input id="@Item.ColumnName" class="form-control" placeholder="@Item.HeaderText" type="text">*@
+                </div>
+
+            }
+            else if (Item.AllowForFilter == true && Item.Tag.ToUpper() == "S" && Item.DataType.ToUpper() == "TODATE")
+            {
+                <div class="form-group" style="margin-bottom:15px">
+                    <label id="@Item.ColumnName" class="" for="exampleInputPassword2">@Item.HeaderText</label><br />
+                    @Html.TextBox(@Item.ColumnName, null, "{0:d M yyyy}", new { @class = "form-control searchPanelDatepicker", placeholder = @Item.HeaderText, @style = "background:#fff;width:165px;", @onpaste = "return false;" })
+
+                    @*<input id="@Item.ColumnName" class="form-control" placeholder="@Item.HeaderText" type="text">*@
+                </div>
+
+            }
+            @*else if (Item.AllowForFilter == true && Item.Tag.ToUpper() == "S" && Item.DataType.ToUpper() == "BIT")
+                {
+                    <div class="form-group" style="margin-bottom:15px">
+                        <label id="@Item.ColumnName" class="sr-only" for="exampleInputPassword2">@Item.HeaderText</label>
+                        @Html.TextBox(@Item.ColumnName, null, new { id = "@Item.ColumnName", @class = "form-control", placeholder = @Item.HeaderText })
+                    </div>
+                }*@
+            else if (Item.AllowForFilter == true && Item.Tag.ToUpper() == "S" && Item.DataType.ToUpper() == "DROPDOWN")
+            {
+                if (Item.PageID == 30 || Item.PageID == 31 || (Item.PageID == 20 && Item.ColumnName == "StatusID") || Item.PageID == 36)
+                {
+                    ViewBag.DropDown = GCC_Canteen.Models.Repository.SelectListRepository.FillSelectList(spName: Item.LookUpQuery,SelectedValue:"0");
+                    <div class="form-group" style="margin-bottom:15px">
+                        <label id="@Item.ColumnName" class="" for="exampleInputPassword2">@Item.HeaderText</label><br />
+                        @Html.DropDownList(@Item.ColumnName, (IEnumerable<SelectListItem>)ViewBag.DropDown, "Select " + @Item.HeaderText, new { style = "width:165px", @class = "form-control", placeholder = @Item.HeaderText })
+                    </div>
+                }
+                else
+                {
+                    ViewBag.DropDown = GCC_Canteen.Models.Repository.SelectListRepository.FillSelectList(spName: Item.LookUpQuery);
+                    <div class="form-group" style="margin-bottom:15px">
+                        <label id="@Item.ColumnName" class="" for="exampleInputPassword2">@Item.HeaderText</label><br />
+                        @Html.DropDownList(@Item.ColumnName, (IEnumerable<SelectListItem>)ViewBag.DropDown, "Select " + @Item.HeaderText, new { style = "width:165px", @class = "form-control", placeholder = @Item.HeaderText })
+                    </div>
+                }
+            }
+
+            @*<div class="form-group" style="margin-bottom:15px">
+                    <label class="sr-only" for="exampleInputEmail2">Branch Office Code</label>
+                    <input class="form-control" id="exampleInputEmail2" placeholder="Branch Office Code" type="email">
+                </div>
+                <div class="form-group" style="margin-bottom:15px">
+                    <label class="sr-only" for="exampleInputPassword2">Branch Office Name</label>
+                    <input class="form-control" id="exampleInputPassword2" placeholder="Branch Office Name" type="text">
+                </div>*@
+
+        }
+
+        <button type="submit" class="btn btn-info SetLinkURL" style="margin-left:5px;margin-top:0px;height:30px" id="advanced-search-button">
+            <i class="fa fa-search"></i>
+            Search
+        </button>
+
+        @*</form>*@
+
+        @if (Model.Exists(m => m.Tag == "A"))
+        {
+            <br />
+
+            <a id="show-search" style="padding-top:10px">Advanced Search</a>
+        }
+    </div>
+
+
+    <div id="advanced-search-show">
+        @if (Model.Exists(m => m.Tag == "A"))
+        {
+            <div class="panel-body" style="margin-top:-30px">
+                @*<form class="form-inline">*@
+
+                @foreach (var Item in Model)
+                {
+
+                    if (Item.AllowForFilter == true && Item.Tag.ToUpper() == "S" && Item.DataType.ToUpper() == "VARCHAR")
+                    {
+
+                        <div class="form-group" style="margin-bottom:15px">
+                            <label id="lbl @Item.ColumnName" class="sr-only" for="exampleInputPassword2">@Item.HeaderText</label>
+                            @*<input id="txt @Item.ColumnName" class="form-control" placeholder="@Item.HeaderText" type="text">*@
+                            @Html.TextBox(@Item.ColumnName, null, new { style = "width:165px;", id = "@Item.ColumnName", @class = "form-control", placeholder = @Item.HeaderText })
+                        </div>
+                    }
+                    else if (Item.AllowForFilter == true && Item.Tag.ToUpper() == "A" && Item.DataType.ToUpper() == "Date")
+                    {
+
+                    }
+                    else if (Item.AllowForFilter == true && Item.Tag.ToUpper() == "A" && Item.DataType.ToUpper() == "Bit")
+                    {
+                        @Html.CheckBox(Item.ColumnName, false)
+                        @Html.Label(Item.ColumnName)
+                    }
+                    else if (Item.AllowForFilter == true && Item.Tag.ToUpper() == "A" && Item.DataType.ToUpper() == "Dropdown")
+                    {
+
+                    }
+
+                }
+
+
+                @*<div class="form-group" style="margin-bottom:15px">
+                        <label class="sr-only" for="exampleInputEmail2">Branch Office Code</label>
+                        <input class="form-control" id="exampleInputEmail2" placeholder="adv search1" type="email">
+                    </div>
+                    <div class="form-group" style="margin-bottom:15px">
+                        <label class="sr-only" for="exampleInputPassword2">Branch Office Name</label>
+                        <input class="form-control" id="exampleInputPassword2" placeholder="adv search2" type="text">
+                    </div>
+                    <div class="form-group" style="margin-bottom:15px">
+                        <label class="sr-only" for="exampleInputPassword2">Branch Office Name</label>
+                        <input class="form-control" id="exampleInputPassword2" placeholder="adv search3" type="text">
+                    </div>*@
+
+                <button type="submit" class="btn btn-info SetLinkURL" style="margin-left:5px;margin-top:-15px;height:30px">
+                    <i class="fa fa-search"></i>
+                    Search
+                </button>
+                @*</form>*@
+                <br />
+
+                <a id="hide-search">Hide Search</a>
+            </div>
+        }
+    </div>
+
+}
+
+<script type="text/javascript">
+
+    $(document).on('click', '#advanced-search-button', function () {
+        $('#lblSearchCriteria').hide();
+    });
+    //$(document).ready(function () {
+    //    debugger;
+    //    $("#hdfSearchURL").val(window.location.href.toString());
+    //});
+
+    //function SetLinkURL() {
+    //    debugger;
+    //    $("#hdfSearchURL").val();
+    //    for (var url = 0; url < $("#ctrlGrid1 thead tr th a").length; url++) {
+    //        $("#ctrlGrid1 thead tr th a")[url].href = ($("#ctrlGrid1 thead tr th a")[url].href.toString()).replace($("#ctrlGrid1 thead tr th a")[url].href.toString().split('?')[0], $("#hdfSearchURL").val());
+    //    }
+    //    //debugger;
+    //    //for (var sepr = 0; sepr < $(".pagination")[0].childNodes.length; sepr++) {
+    //    //    $(".pagination")[0].childNodes[sepr].children[0].href = ($(".pagination")[0].childNodes[sepr].children[0].href.replace($(".pagination")[0].childNodes[sepr].children[0].href.split('?')[0], $("#hdfSearchURL").val()));
+    //    //}
+    //}
+</script>

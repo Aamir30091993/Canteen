@@ -1,0 +1,333 @@
+﻿@model GCC_Canteen.ViewModel.ReportViewModel
+@{
+    /**/
+
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_GCC_CanteenMaster.cshtml";
+    ViewBag.PageName = "Report";
+}
+
+<link href="~/assets/css/modern.css" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500,700'
+      rel='stylesheet' type='text/css'>
+<link href="~/assets/plugins/pace-master/themes/blue/pace-theme-flash.css"
+      rel="stylesheet">
+<link href="~/assets/plugins/uniform/css/uniform.default.min.css" rel="stylesheet">
+<link href="~/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="~/assets/plugins/fontawesome/css/font-awesome.css" rel="stylesheet" type="text/css">
+<link href="~/assets/plugins/line-icons/simple-line-icons.css" rel="stylesheet" type="text/css">
+<link href="~/assets/plugins/offcanvasmenueffects/css/menu_cornerbox.css"
+      rel="stylesheet" type="text/css">
+<link href="~/assets/plugins/waves/waves.min.css" rel="stylesheet" type="text/css">
+<link href="~/assets/plugins/switchery/switchery.min.css" rel="stylesheet"
+      type="text/css">
+<link href="~/assets/plugins/3d-bold-navigation/css/style.css" rel="stylesheet" type="text/css">
+<link href="~/assets/plugins/slidepushmenus/css/component.css" rel="stylesheet" type="text/css">
+<link href="~/assets/plugins/datatables/css/jquery.datatables.min.css" rel="stylesheet" type="text/css">
+<link href="~/assets/plugins/datatables/css/jquery.datatables_themeroller.css" rel="stylesheet" type="text/css">
+<link href="~/assets/plugins/x-editable/bootstrap3-editable/css/bootstrap-editable.css"
+      rel="stylesheet" type="text/css">
+<link href="~/assets/plugins/bootstrap-datepicker/css/datepicker3.css" rel="stylesheet" type="text/css">
+@*<script src="~/assets/plugins/jquery/jquery-2.1.3.min.js">
+    </script>
+    <script src="~/assets/plugins/jquery-ui/jquery-ui.min.js">
+    </script>
+    <script src="~/assets/plugins/bootstrap/js/bootstrap.min.js">
+    </script>*@<!-- Theme Styles -->
+<link href="~/assets/css/modern.css" rel="stylesheet" type="text/css">
+<link class="theme-color" href="~/assets/css/themes/white.css" rel="stylesheet" type="text/css">
+<link href="~/assets/css/custom.css" rel="stylesheet" type="text/css">
+<script src="~/assets/plugins/3d-bold-navigation/js/modernizr.js">
+</script>
+<script src="~/assets/plugins/offcanvasmenueffects/js/snap.svg-min.js">
+</script>
+<script type="text/javascript" src="~/assets/js/jquery.ui.widget.js"></script>
+@*Multiple Select Dropdown*@
+<link href="~/assets/css/bootstrap-select.min.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap-select.min.js"></script>
+<style>
+    .dropdown {
+        position: inherit;
+        top: 50%;
+        transform: translateY(-50 %);
+    }
+
+        .dropdown a {
+            color: #fff;
+        }
+
+        .dropdown dd,
+        .dropdown dt {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .dropdown ul {
+            margin: -1px 0 0 0;
+        }
+
+        .dropdown dd {
+            position: relative;
+        }
+
+        .dropdown a,
+        .dropdown a:visited {
+            color: #000000;
+            text-decoration: none;
+            outline: none;
+            font-size: 12px;
+        }
+
+        /*.dropdown dt a {
+            background-color: #f2f2f2;
+            display: block;
+            padding: 8px 20px 5px 10px;
+            min-height: 25px;
+            line-height: 24px;
+            overflow: hidden;
+            border: 0;
+            width: 272px;
+        }*/
+
+        .dropdown dt a span,
+        .multiSel span {
+            cursor: pointer;
+            display: inline-block;
+            padding: 0 3px 2px 0;
+        }
+
+        .dropdown dd ul {
+            background-color: #4F6877;
+            border: 0;
+            color: #fff;
+            display: none;
+            left: 0px;
+            padding: 2px 15px 2px 5px;
+            position: inherit;
+            top: 2px;
+            width: 280px;
+            list-style: none;
+            height: 100px;
+            height: auto;
+            overflow: auto;
+        }
+
+        .dropdown span.value {
+            display: none;
+        }
+
+        .dropdown dd ul li a {
+            padding: 5px;
+            display: block;
+        }
+
+            .dropdown dd ul li a:hover {
+                background-color: #fff;
+            }
+
+    /*button {
+         background-color: #6BBE92;
+         width: 302px;
+         border: 0;
+         padding: 10px 0;
+         margin: 5px 0;
+         text-align: center;
+         color: #fff;
+         font-weight: bold;
+     }*/
+</style>
+
+
+@using (Ajax.BeginForm("Show", "Report", new AjaxOptions { HttpMethod = "POST", OnSuccess = "Display", OnFailure = "SaveFaluire", OnBegin = "OnBeginReport" }))
+{
+    <div class="panel panel-white">
+        <div id="ReportParameter" style="margin-left: 15px;margin-top: 15px;">
+            @Html.HiddenFor(m => m.ReportParameterDetails.ReportID)
+            @*@Html.HiddenFor(m => m.ReportParameterDetails.ReportTypeID)*@
+            <input type="hidden" id="hdfSessionIdentifier" value=@Convert.ToString(TempData["SessionIdentifier"])>
+            @Html.Hidden("ReportName")
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.Label("Report Type")
+                        @Html.DropDownListFor(m => m.ReportParameterDetails.ReportID, ViewBag.ReportTypeList == null ? new List<SelectListItem>
+                        { new SelectListItem { Value = "", Text = "" } } : (IEnumerable<SelectListItem>)ViewBag.ReportTypeList, "--Select--"
+                        , new { id = "ddlReport", @class = "form-control m-b-sm", @style = "width: 100%;color:#999;margin-bottom: 0px;" })
+                        @Html.ValidationMessageFor(m => m.ReportParameterDetails.ReportID, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(m => m.ReportParameterDetails.ReportID)
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        @Html.Label("From Date")
+                        @Html.TextBoxFor(m => m.ReportParameterDetails.ReportFromDate, new { @class = "form-control text-mandatory", @autocomplete = "off" })
+                        @Html.ValidationMessageFor(m => m.ReportParameterDetails.ReportFromDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        @Html.Label("To Date")
+                        @Html.TextBoxFor(m => m.ReportParameterDetails.ReportToDate, new { @class = "form-control text-mandatory", @autocomplete = "off" })
+                        @Html.ValidationMessageFor(m => m.ReportParameterDetails.ReportToDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.Label("Event Type")
+                        @Html.DropDownListFor(m => m.ReportParameterDetails.EventID, ViewBag.EventTypeList == null ? new List<SelectListItem>
+                        { new SelectListItem { Value = "", Text = "" } } : (IEnumerable<SelectListItem>)ViewBag.EventTypeList, "--Select--"
+                        , new { id = "ddlEventTypeReport", @class = "form-control m-b-sm", @style = "width: 100%;color:#999;margin-bottom: 0px;" })
+                        @Html.HiddenFor(m => m.ReportParameterDetails.EventID)
+                    </div>
+                </div>
+
+                @*<br />*@
+                <div class="row">
+                    <div class="col-md-12">
+                        <button class="btn btn-primary" type="submit" style="margin-left:15px;width:120px" disabled=@ViewData["WiteAccess"]>Generate Report</button>
+
+                    </div>
+                </div>
+                @*<br />*@
+            </div>
+
+            <div id="GridReport" style="display:none;">
+                @Html.Partial("_GridReport")
+            </div>
+            <br />
+        </div>
+    </div>
+}
+
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+<script src="~/Scripts/JSScript/Report.js?v1" type="text/javascript"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script>
+    //Report
+    $('#ddlReport').change(function (e) {
+        debugger;
+        var report = $('#ddlReport').val();
+        $('#ReportParameterDetails_ReportID').val(report);
+        $('#ReportName').val(e.currentTarget.selectedOptions[0].innerHTML);
+        debugger;
+    });
+
+    function OnBeginReport() {
+        debugger;
+        $("#spinner").show();
+        $('#paramValMsg').css('display', 'none');
+    };
+
+    function Display(data1) {
+        debugger;
+        data1 = "Export"; //Added by Aamir - 06/03/2024
+        $("#spinner").hide();
+        $("#section101").show();
+        $("#section100").hide();
+        $('#ReportParameter').css('display', 'block');
+        if (data1 == true) {
+            $("#ReportParameter").show();
+            $("#GridReport").hide();
+            //  $("#CrystalReport").show();
+            // $("#iCrystalReport").attr('src', '/WebForm/CrystalReportViewer.aspx');
+            window.open('/WebForm/CrystalReportViewer.aspx?SessionIdentifier=' + $("#hdfSessionIdentifier").val(), true);
+            // win.focus();
+        }
+        else {
+            if (data1 == "Export") {
+                window.location.href = "/Report/Export?ReportName=" + $("#ReportName").val() + "&ReportID=" + $("#ReportParameterDetails_ReportID").val() + "&SessionIdentifier=" + $("#hdfSessionIdentifier").val();
+            }
+            else {
+                //$("#ReportParameter").hide();
+                $("#GridReport").show();
+                //$("#section101").css("display","block");
+                $("#GridReport").html(data1);
+                $('.gridresults').dataTable({
+                    "sPaginationType": "full_numbers",
+                    "bSort": false,
+                    "bFilter": false,
+                    "bInfo": false,
+                    "lengthChange": false
+                });
+            }
+        }
+        $('#graph_view').css('display', 'none');
+        $('#GridReport').css('display', 'block');
+        //else
+        //    window.open("../GenericReportViewer/ShowGenericRpt", 'mywindow', 'fullscreen=yes, scrollbars=auto');
+    }
+
+    // Function to check if EventID is selected, and set its value to null if not selected
+    function checkEventID() {
+        var eventIDSelected = $('#ddlEventTypeReport').val();
+        if (!eventIDSelected) {
+            // If EventID is not selected, set its value to null
+            $('#ReportParameterDetails_EventID').val(null);
+        }
+    }
+
+
+    $(function () {
+        debugger;
+        //var MinimimDate = new Date();
+        //MinimimDate.setDate(MinimimDate.getDate());
+        $("#ReportParameterDetails_ReportFromDate").datepicker(
+            {
+                todayHighlight: 'TRUE',
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                startDate: '01/01/1900'//MinimimDate//new Date()
+
+            }).on('changeDate', function (ev) {
+                debugger;
+                ev.date.toDateString()
+
+
+            });
+
+        // Attach the checkEventID function to the form submission
+        $("form").submit(function () {
+            checkEventID();
+        });
+    });
+
+    //$(function () {
+    //    debugger;
+    //    //var MinimimDate = new Date();
+    //    //MinimimDate.setDate(MinimimDate.getDate());
+    //    $("#ReportParameterDetails_OrderDate").datepicker(
+    //        {
+    //            todayHighlight: 'TRUE',
+    //            format: 'dd/mm/yyyy',
+    //            autoclose: true,
+    //            startDate: '01/01/1900'//MinimimDate//new Date()
+
+    //        }).on('changeDate', function (ev) {
+    //            debugger;
+    //            ev.date.toDateString()
+
+
+    //        });
+    //});
+
+    $(function () {
+        debugger;
+        //var MinimimDate = new Date();
+        //MinimimDate.setDate(MinimimDate.getDate());
+        $("#ReportParameterDetails_ReportToDate").datepicker(
+            {
+                todayHighlight: 'TRUE',
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                startDate: '01/01/1900'//MinimimDate//new Date()
+
+            }).on('changeDate', function (ev) {
+                debugger;
+                ev.date.toDateString()
+            });
+    });
+
+</script>

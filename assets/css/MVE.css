@@ -1,0 +1,60 @@
+﻿.divcross
+{
+  
+   display: inline !important;
+   -webkit-display: inline-block !important;
+  -moz-display: inline-block !important;
+  -ms-display: inline !important;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 1px 3px !important;
+    margin-right: 2px !important;
+    margin-bottom: 3px !important;
+    color: #333;
+    vertical-align:middle;
+    background-color: #f6f6f6;
+    width:auto !important;
+}    
+.button
+{
+        background-color:#f6f6f6;
+        font-size:13px;
+        display : inline;
+        border:0px;
+        font-weight:bold;
+        cursor:hand;
+        vertical-align:top;
+          
+    }
+      
+        
+.watermarked
+{
+    height: 20px;
+    width: 150px;
+    padding: 2px 0 0 2px;
+    border: 1px solid #BEBEBE;
+    font-size: 13px;
+    font-family: Calibri;
+    color: gray;
+          
+}
+        
+.completionList {
+border:solid 1px Black;
+margin:0px;
+padding:3px;
+cursor:pointer;
+display:block;
+background-color:#fff;
+}
+         
+.listItem {
+color: #191919;
+cursor:pointer;
+}
+         
+.itemHighlighted {
+background-color: #B2C2D1;      
+cursor:pointer; 
+}

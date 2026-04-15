@@ -1,0 +1,307 @@
+﻿@model GCC_Canteen.ViewModel.ImportUserViewModel
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_GCC_CanteenMaster.cshtml";
+    ViewBag.PageName = "User Upload";
+}
+
+<link rel="Stylesheet" type="text/css" href="/assets/css/select2.css" />
+<link href="/assets/css/modern.css" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/jquery.validate.min.js"></script>
+@*<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>*@
+<script type="text/javascript">
+    $(function () {
+        $("#datepicker").datepicker({
+            format: "dd/mm/yyyy",
+            autoclose: true
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function (e) {
+        var ImportFilePath = "@Model._ImportUserHdr.ImportFilePath";
+        if (ImportFilePath != "") {
+            $("#divClearAttachment").show();
+            $("#divAttachment").hide();
+        }
+        else {
+            $("#divClearAttachment").hide();
+            $("#divAttachment").show();
+            $("#Attachment").val('');
+        }
+    });
+</script>
+@using (Ajax.BeginForm("Save",
+            new AjaxOptions
+            {
+                OnSuccess = "AddSuccess",
+                OnFailure = "AddSuccess",
+                HttpMethod = "POST"
+            }))
+{
+    <div id="myModalSave" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Data Imported Successfully!!!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnClose">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@using (Ajax.BeginForm("File",
+            new AjaxOptions
+            {
+                OnSuccess = "AddSuccess",
+                OnFailure = "AddSuccess",
+                HttpMethod = "POST"
+            }))
+{
+    <div id="myModalFileUpload" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Upload a New File To Process!!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@using (Ajax.BeginForm("Edit", "ImportUser", new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnSuccess = "ShowGrids",
+    UpdateTargetId = "parentView",
+    OnBegin = "onbegin",
+    LoadingElementId = "spinner"
+
+}))
+{
+    <div class="panel panel-white">
+        <div class="panel-body-seperate" id="section2" style="margin-left:10px">
+            <div class="row">
+                <div id="accordion-first" class="clearfix" style="padding-left:0px">
+                    <div class="accordion" id="accordion1">
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne">
+                                    <em class="icon-fixed-width fa fa-minus"></em>Import Details
+                                </a>
+                            </div>
+                            <div style="height: auto;" id="collapseOne" class="accordion-body collapse in">
+                                <div class="row">
+
+                                    <form>
+                                        <div class="col-md-12">
+                                            <div class="form-group" id="child-element1">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        @Html.HiddenFor(m => m._ImportUserHdr.SessionIdentity, new { id = "SessionIdentity" })
+                                                        @Html.HiddenFor(m => m._ImportUserHdr.StatusID)
+                                                        @Html.HiddenFor(m => m._ImportUserHdr.IsEdit)
+                                                        @Html.HiddenFor(m => m._ImportUserHdr.ImportID)
+                                                        @*@Html.LabelFor(m => m._ImportVerticalwiseMonthlyTargetHdr.LOBID)*@
+                                                        @*@Html.DropDownListFor(m => m._ImportVerticalwiseMonthlyTargetHdr.LOBID, ViewBag.ImportVerticalwiseMonthlyTargetLOB == null ? new List<SelectListItem> { new SelectListItem { Value = "", Text = "" } } : (IEnumerable<SelectListItem>)ViewBag.ImportVerticalwiseMonthlyTargetLOB, "--Select--", new { id = "ddlLOB", @class = "form-control text-mandatory", disabled = "disabled" })<br>
+                                                        @Html.HiddenFor(m => m._ImportVerticalwiseMonthlyTargetHdr.LOBID)
+                                                        @Html.ValidationMessageFor(m => m._ImportVerticalwiseMonthlyTargetHdr.LOBID, "", new { @class = "text-danger" })*@
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                @*@Html.LabelFor(m => m._ImportVerticalwiseMonthlyTargetHdr.FinYear)
+                                                @Html.TextBoxFor(m => m._ImportVerticalwiseMonthlyTargetHdr.FinYear, new { id = "ddlFinYear", @class = "form-control text-mandatory", disabled = "disabled" })<br>
+                                                @Html.HiddenFor(m => m._ImportVerticalwiseMonthlyTargetHdr.FinYear)
+                                                @Html.ValidationMessageFor(m => m._ImportVerticalwiseMonthlyTargetHdr.FinYear, "", new { @class = "text-danger" })*@
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(m => m._ImportUserHdr.ImportDate)
+                                                @Html.TextBoxFor(m => m._ImportUserHdr.ImportDate, new { @class = "form-control text-mandatory", @disabled = "disabled" })
+                                                @Html.HiddenFor(m => m._ImportUserHdr.ImportDate)
+                                                @Html.ValidationMessageFor(m => m._ImportUserHdr.ImportDate, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Sample Format</label><br>
+                                            <a href="@ViewBag.SampleFormat"><i class="fa fa-download" style="font-size: 35px;margin-left:25px;"></i></a>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        @Html.HiddenFor(m => m._ImportUserHdr.AttachmentSessionKey, new { id = "AttachmentSessionKey", @value = "" })
+                                                        <label>Import File</label>
+                                                        <div class="file-program">
+                                                            <div class="col-sm-12" style="padding-left: 0px;margin-bottom: 15px;">
+                                                                <div class="row">
+                                                                    <div class="col-md-3" id="divAttachment">
+                                                                        @Html.TextBoxFor(m => m.Attachment, new { type = "file", @accept = ".xls,.xlsx" })
+                                                                        @Html.HiddenFor(m => m._ImportUserAttach.Status, new { @id = "hdfAttachmentStatus" })
+                                                                        <input type="hidden" value="0" id="hdfUpload" />
+                                                                        @Html.ValidationMessageFor(m => m.Attachment, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                    @if (Model._ImportUserHdr.ImportFilePath != null)
+                                                                    {
+                                                                        <div class="col-md-3" id="divAttachmentView">
+                                                                            <a href="@Model._ImportUserHdr.ImportFilePath">View</a>
+                                                                        </div>
+                                                                    }
+                                                                    <div class="col-md-3" id="divClearAttachment">
+                                                                        <a id="clearAttachemnt" data-toggle="modal" data-target="#myModal2" style="cursor:pointer" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false"><i class="fa fa-times" title="Delete"></i></a>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(m => m._ImportUserHdr.Remark)
+                                                @Html.TextAreaFor(m => m._ImportUserHdr.Remark, new { id = "ImportUserHdr_Remark", @rows = 2, @class = "form-control", disabled = "disabled" })
+                                                @Html.HiddenFor(m => m._ImportUserHdr.Remark)
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <br>
+
+                                </div>
+                            </div>
+
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                @if (Model._ImportUserHdr.StatusID == 1)
+                {
+                    <button class="btn btn-primary" type="submit" style="margin-left:0px;width:80px" id="btnProcess" disabled=@ViewData["UpdateAccess"]>Process</button>
+                }
+                <button class="btn btn-primary" type="button" style="margin-left:15px;width:80px" id="btnCancel">Back</button>
+                <button class="btn btn-primary" type="button" style="margin-left:15px;width:100px" id="btnExport">Export XLS</button>
+            </div>
+        </div>
+        <div id="parentView">
+            @Html.Partial("_ParentDiv", Model)
+        </div>
+        <div class="panel-body-seperate" id="section6" style="margin-left:10px">
+            <div class="row">
+                <div id="accordion-first" class="clearfix" style="padding-left:0px">
+                    <div class="accordion" id="accordion6">
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion6" href="#collapse6">
+                                    <em class="icon-fixed-width fa fa-plus"></em>System Details
+                                </a>
+                            </div>
+                            <br>
+                            <div class="accordion-body collapse" id="collapse6" style="height: 0px;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-4" style="padding-left:0px">
+                                            Created By :
+                                            @if (Model._ImportUserHdr.CreatedUser != null)
+                                            {
+                                                @Html.Label(Model._ImportUserHdr.CreatedUser);
+                                            }
+                                        </div>
+                                        <div class="col-md-4">
+                                            Modified By :
+                                            @if (Model._ImportUserHdr.ModifiedUser != null)
+                                            {
+                                                @Html.Label(Model._ImportUserHdr.ModifiedUser);
+                                            }
+                                        </div>
+                                        <div class="col-md-4">
+                                            Deleted By :
+                                            @if (Model._ImportUserHdr.DeletedUser != null)
+                                            {
+                                                @Html.Label(Model._ImportUserHdr.DeletedUser);
+                                            }
+                                        </div>
+                                    </div>
+                                </div><br>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-4" style="padding-left:0px">
+                                            Created Date :
+                                            @if (Model._ImportUserHdr.CreatedDate != null)
+                                            {
+                                                @Html.Label(Model._ImportUserHdr.CreatedDate.ToString());
+                                            }
+                                        </div>
+                                        <div class="col-md-4">
+                                            Modified Date :
+                                            @if (Model._ImportUserHdr.ModifiedDate != null)
+                                            {
+                                                @Html.Label(Model._ImportUserHdr.ModifiedDate.ToString());
+                                            }
+                                        </div>
+                                        <div class="col-md-4">
+                                            Deleted Date :
+                                            @if (Model._ImportUserHdr.DeletedDate != null)
+                                            {
+                                                @Html.Label(Model._ImportUserHdr.DeletedDate.ToString());
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- end accordion -->
+            </div>
+        </div>
+    </div>
+}
+
+<script src="~/Scripts/JSScript/ImportUser.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script type="text/javascript">
+
+    $('#btnCancel').click(function (e) {
+        e.preventDefault();
+        window.location.href = 'List';
+    })
+
+    function ShowGrids(data) {
+        debugger;
+        if (data.toLowerCase() == "error") {
+            $("#myModalFileUpload").modal({ backdrop: 'static', keyboard: false });
+            return false;
+        }
+        else if (data.indexOf("<div") > -1) {
+            $("#parentView").html(data);
+        }
+        else {
+            $("#parentView").html("");
+            alert(data);
+        }
+    }
+    function onbegin() {
+        debugger;
+        if ($("#hdfUpload").val() != "1") {
+            $("#myModalFileUpload").modal({ backdrop: 'static', keyboard: false });
+            return false;
+        }
+        else
+            return true;
+    }
+    //$("#ddlLOB").attr("disabled", "disabled");
+    //$("#ddlFinYear").attr("disabled", "disabled");
+    //$("#ImportVerticalwiseMonthlyTargetHdr_Remark").attr("disabled", "disabled");
+</script>
+

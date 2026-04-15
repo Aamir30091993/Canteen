@@ -1,0 +1,493 @@
+﻿@model GCC_Canteen.ViewModel.DashboardViewModel
+@{
+    ViewBag.Title = "Show";
+    Layout = "~/Views/Shared/_GCC_CanteenMaster.cshtml";
+    ViewBag.PageName = "Data Extract";
+}
+<!-- Include jQuery if it's not already included -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Include Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<link href="~/assets/css/modern.css" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/select2.js"></script>
+<link rel="Stylesheet" type="text/css" href="~/assets/css/select2.css" />
+<link href="~/assets/css/bootstrap-select.min.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap-select.min.js"></script>
+<script src="~/Scripts/select2.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link href="~/assets/css/circle.css" rel="stylesheet" />
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 25px auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+        .header img {
+            width: 100px;
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+    .submit-button {
+        display: flex;
+        justify-content: center;
+    }
+
+        .submit-button button {
+            background-color: #012056;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .submit-button button:hover {
+                background-color: #0056b3;
+            }
+
+
+    .select2-selection {
+        outline: 0;
+        position: relative;
+        height: auto !important;
+    }
+
+    .select2-search {
+        position: absolute;
+        left: 0;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__display {
+        padding-left: 20px;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        padding: 0px 5px;
+    }
+
+    .select2-search__field {
+        height: auto !important;
+        padding: 0px 10px !important;
+    }
+
+    .pattern {
+        display: flex;
+    }
+
+    .form-group input, .form-group select {
+        padding: 5px;
+    }
+
+    .form-group label {
+        font-weight: normal !important;
+    }
+
+    .select2-container .select2-selection--multiple {
+        max-height: 80px;
+        overflow: auto;
+    }
+</style>
+
+@*<body>
+        <div class="container">
+            <div class="header">
+
+                <h1 style="font-weight:500">Data Extract</h1>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label>From Date</label>
+                    <div>
+                        <input type="text" id="fromDate" class="form-control text-mandatory datepicker" autocomplete="off" value="@Model.DashboardDetails.FromDate">
+                        <span class="text-danger" id="fromDateError"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>To Date</label>
+                    <div>
+                        <input type="text" id="toDate" class="form-control text-mandatory datepicker" autocomplete="off" value="@Model.DashboardDetails.ToDate">
+                        <span class="text-danger" id="toDateError"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Employee Name")
+                    <select id="DashboardDetails_Employee" name="DashboardDetails.SelectedEmployees" class="form-control" multiple="multiple" style="width: 100%;">
+                    </select>
+                    @Html.ValidationMessageFor(m => m.DashboardDetails.Employee, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    <label for="mealType">Meal Type</label>
+                    <div>
+                        @Html.DropDownList("mealType", (IEnumerable<SelectListItem>)ViewBag.MealTypeList, "-- Select --", new { id = "mealType", @class = "form-control m-b-sm", @style = "width: 100%; color: #999; margin: 0px;" })
+                    </div>
+                </div>
+                <div class="form-group" id="mealSubtypeDropdown" style="display: none;">
+                    <label for="mealSubtype">Sub Meal Type</label>
+                    <div>
+                        @Html.DropDownList("mealSubtype", (IEnumerable<SelectListItem>)ViewBag.MealSubTypeList, "-- Select --", new { id = "mealSubtype", @class = "form-control m-b-sm", @style = "width: 100%; color: #999; margin: 0px;" })
+                    </div>
+                </div>
+                <div class="submit-button">
+                    <button type="submit" id="btnsubmit">Submit</button>
+                </div>
+            </form>
+        </div>
+
+
+    </body>*@
+
+
+
+@using (Ajax.BeginForm("Export", "ControllerName", new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnSuccess = "Display",
+    OnBegin = "OnBeginReport"
+}, new { @class = "form-horizontal", role = "form" }))
+{
+<div class="container">
+    <div class="header">
+        <h1 style="font-weight:500">Data Extract</h1>
+    </div>
+    <div class="form-group">
+        <label>From Date</label>
+        <div>
+            <input type="text" id="fromDate" class="form-control text-mandatory datepicker" autocomplete="off" value="@Model.DashboardDetails.FromDate">
+            <span class="text-danger" id="fromDateError"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>To Date</label>
+        <div>
+            <input type="text" id="toDate" class="form-control text-mandatory datepicker" autocomplete="off" value="@Model.DashboardDetails.ToDate">
+            <span class="text-danger" id="toDateError"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Employee Name")
+        <select id="DashboardDetails_Employee" name="DashboardDetails.SelectedEmployees" class="form-control" multiple="multiple" style="width: 100%;">
+        </select>
+        @Html.ValidationMessageFor(m => m.DashboardDetails.Employee, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        @Html.Label("User ID")
+        <select id="DashboardDetails_SelectedUserID" name="DashboardDetails.SelectedUserID" class="form-control" multiple="multiple" style="width: 100%;">
+        </select>
+        @Html.ValidationMessageFor(m => m.DashboardDetails.SelectedUserID, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        <label for="mealType">Meal Type</label>
+        <div>
+            @Html.DropDownList("mealType", (IEnumerable<SelectListItem>)ViewBag.MealTypeList, "-- Select --", new { id = "mealType", @class = "form-control m-b-sm", @style = "width: 100%; color: #999; margin: 0px;" })
+        </div>
+    </div>
+    <div class="form-group" id="mealSubtypeDropdown" style="display: none;">
+        <label for="mealSubtype">Sub Meal Type</label>
+        <div>
+            @Html.DropDownList("mealSubtype", (IEnumerable<SelectListItem>)ViewBag.MealSubTypeList, "-- Select --", new { id = "mealSubtype", @class = "form-control m-b-sm", @style = "width: 100%; color: #999; margin: 0px;" })
+        </div>
+    </div>
+    <div class="submit-button">
+        <button type="submit" id="btnsubmit">Submit</button>
+    </div>
+</div>
+}
+
+
+
+
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script>
+
+    // JavaScript to handle changes in meal type dropdown
+    document.getElementById("mealType").addEventListener("change", function () {
+        var selectedMealType = this.value;
+        var mealSubtypeDropdown = document.getElementById("mealSubtypeDropdown");
+
+        // Check if selected meal type is 2 or 4 to show the meal subtype dropdown
+        if (selectedMealType == "2" || selectedMealType == "4") {
+            mealSubtypeDropdown.style.display = "block";
+            // You can add options to the meal subtype dropdown here based on the selected meal type
+        } else {
+            mealSubtypeDropdown.style.display = "none";
+            // You can clear the meal subtype dropdown here if needed
+        }
+    });
+
+    function populateMealTypes() {
+        var selectElement = document.getElementById("mealType");
+
+        // Clear existing options
+        selectElement.innerHTML = "";
+
+        // Add options based on data source
+        MealTypeList.forEach(function (type) {
+            var option = document.createElement("option");
+            option.value = type;
+            option.text = type;
+            selectElement.appendChild(option);
+        });
+    }
+
+    function SavedSuccessfully(data) {
+        //$('#spinner').hide();
+    }
+
+    $(function () {
+        var MinimimDate = new Date();
+        MinimimDate.setDate(MinimimDate.getDate());
+
+        //var MinimimDate = new Date();
+        //MinimimDate = parseDate($("StartDate").val());
+        //var MaximumDate = new Date();
+        //MaximumDate = MinimimDate.setDate(MinimimDate.getDate() - 15);
+        debugger;
+        $("#fromDate").datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            dateFormat: "dd/MM/yyyy"
+        });
+        debugger;
+        $("#toDate").datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            dateFormat: "dd/MM/yyyy"
+        });
+
+    });
+
+    $(document).on('keypress', '#fromDate', function () {
+        return false;
+    })
+
+    $(document).on('keypress', '#toDate', function () {
+        return false;
+    })
+
+    // Initialize Select2 on the employee select element
+    $('#DashboardDetails_Employee').select2({
+        placeholder: "--Select--",
+        minimumInputLength: 1,
+        ajax: {
+            url: '/Canteen/Dashboard/AutoCompleteList',
+            type: 'POST',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    KeyValue: params.term, // search term
+                    ActionID: 4
+                };
+            },
+            processResults: function (data) {
+                var finalList = [{
+                    id: 0,
+                    text: ""
+                }];
+                // Process and map the results
+                finalList = $.map(data, function (item) {
+                    return {
+                        id: item.Key,
+                        text: item.Value
+                    };
+                });
+                return {
+                    results: finalList
+                };
+            },
+            cache: true
+        }
+    });
+
+    $('#DashboardDetails_SelectedUserID').select2({
+        placeholder: "--Select--",
+        minimumInputLength: 1,
+        ajax: {
+            url: '/Canteen/Dashboard/AutoCompleteList',
+            type: 'POST',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    KeyValue: params.term, // search term
+                    ActionID: 5
+                };
+            },
+            processResults: function (data) {
+                var finalList = [{
+                    id: 0,
+                    text: ""
+                }];
+                // Process and map the results
+                finalList = $.map(data, function (item) {
+                    return {
+                        id: item.Key,
+                        text: item.Value
+                    };
+                });
+                return {
+                    results: finalList
+                };
+            },
+            cache: true
+        }
+    });
+
+    // Handle the selection event
+    $('#DashboardDetails_Employee').on('select2:select', function (e) {
+        debugger;
+        var data = e.params.data;
+        // Do something with the selected data if needed
+        console.log("Selected ID: " + data.id);
+    });
+    $('#DashboardDetails_SelectedUserID').on('select2:select', function (e) {
+        debugger;
+        var data = e.params.data;
+        // Do something with the selected data if needed
+        console.log("Selected ID: " + data.id);
+    });
+
+    employeeID = 0;
+    function OnBeginReport() {
+    }
+
+    $(function () {
+        $("#btnsubmit").click(function () {
+            debugger;
+            $('#spinner').show();
+            var fromDate = $("#fromDate").val();
+            var toDate = $("#toDate").val();
+            var employee = $("#DashboardDetails_Employee").val().join(',');
+            var mealType = $("#mealType").val();
+            var selectedMealType = document.getElementById("mealType").value;
+            var selectedMealSubType = document.getElementById("mealSubtype").value;
+            var selectedMealTypeName = document.getElementById("mealType").options[document.getElementById("mealType").selectedIndex].text;
+            var selectedMealSubTypeName = document.getElementById("mealSubtype").options[document.getElementById("mealSubtype").selectedIndex].text;
+            var userIds = $("#DashboardDetails_SelectedUserID").val().join(',');
+            // Check if from date is present
+            if (!fromDate) {
+                alert("Please select From Date.");
+                $('#spinner').hide();
+                return; // Exit the function if from date is missing
+            }
+
+            // Check if to date is present
+            if (!toDate) {
+                alert("Please select To Date.");
+                $('#spinner').hide();
+                return; // Exit the function if to date is missing
+            }
+            // Check if employee name is present
+            if (!employee) {
+                // Set employee to blank if not present
+                employee = "";
+            }
+            // Create JSON object with data
+            var dataToSend = {
+                FromDate: fromDate,
+                ToDate: toDate,
+                Employee: employee,
+                MealType: mealType,
+                SelectedMealType: selectedMealType,
+                SelectedMealSubType: selectedMealSubType
+            };
+            // Perform AJAX request
+            //$.ajax({
+            //    url: '/Dashboard/Export',
+            //    type: 'GET',
+            //    data: dataToSend,
+            //    success: function (response) {
+            //        // Handle success
+            //    },
+            //    error: function (xhr, status, error) {
+            //        // Handle error
+            //    },
+            //    beforeSend: function () {
+            //        // Optional: Code to execute before sending AJAX request
+            //    },
+            //    complete: function () {
+            //        $('#spinner').hide(); // Optional: Code to execute after AJAX request completes
+            //    }
+            //});
+            $('#spinner').hide();
+            //window.location.href = '/Dashboard/Export';
+            window.location.href = '/Canteen/Dashboard/Export?fromDate=' + fromDate + '&toDate=' + toDate + '&employee=' + employee + '&MealTypeID=' + selectedMealType + '&MealSubTypeID=' + selectedMealSubType + '&selectedMealTypeName=' + selectedMealTypeName + '&selectedMealSubTypeName=' + selectedMealSubTypeName + '&LoginID=' + userIds;
+
+        });
+
+
+        $(".datepicker").datepicker({
+            dateFormat: 'dd/mm/yy', // Specify the date format
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.panel-collapse').on('show.bs.collapse', function () {
+            $(this).siblings('.panel-heading').addClass('active');
+        });
+
+        $('.panel-collapse').on('hide.bs.collapse', function () {
+            $(this).siblings('.panel-heading').removeClass('active');
+        });
+    });
+
+    $(document).ajaxComplete(function (event, request, settings) {
+        $('.panel-collapse').on('show.bs.collapse', function () {
+            $(this).siblings('.panel-heading').addClass('active');
+        });
+
+        $('.panel-collapse').on('hide.bs.collapse', function () {
+            $(this).siblings('.panel-heading').removeClass('active');
+        });
+    });
+</script>
+
+
+

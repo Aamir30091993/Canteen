@@ -1,0 +1,260 @@
+﻿@model GCC_Canteen.ViewModel.MealTimeConfigViewModel
+@{
+    ViewBag.Title = "Show";
+    Layout = "~/Views/Shared/_GCC_CanteenMaster.cshtml";
+    ViewBag.PageName = "Meal Time Config";
+}
+<style>
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    .table-container {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+        background-color: transparent;
+    }
+
+        .table-container th, .table-container td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        .table-container th {
+            background-color: #ff7f0e;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .table-container td {
+            background-color: #ffffff;
+        }
+
+        .table-container .form-control {
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #ffffff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: all 0.3s ease;
+        }
+
+            .table-container .form-control:focus {
+                border-color: #ff7f0e;
+                box-shadow: 0 0 5px rgba(255, 127, 14, 0.5);
+            }
+
+
+    .form-header {
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #343a40;
+    }
+</style>
+<div class="container">
+    <form id="mealTimeForm">
+        <div class="form-header">
+            Enable Meal Buffer Time Checking
+            <input type="checkbox" id="enableAllCheckbox" value="@ViewBag.sysConfigData[0].Value"  @(ViewBag.sysConfigData[0].Value == "true" ? "checked='checked'" : "")>
+        </div>
+        <table class="table-container"  id="mealTimeTable">
+            <thead>
+                <tr>
+
+                    <th>Meal Type</th>
+                    <th>From Time</th>
+                    <th>To Time</th>
+                    <th>Buffer Time</th>
+                    <th style="display:none"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.MealTimeConfigListDetails != null)
+                {
+                    foreach (var mealType in Model.MealTimeConfigListDetails)
+                    {
+                <tr>
+                    @*<td style="display:none" class="form-control mealTimeID">@mealType.MealTimeID</td>*@
+
+                    <td>@mealType.MealType</td>
+                    <td>
+                        @Html.DropDownListFor(m => mealType.StartTime, new SelectList(ViewBag.TimeList, "Value", "Text", mealType.StartTime), new { @class = "form-control startTime" })
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => mealType.EndTime, new SelectList(ViewBag.TimeList, "Value", "Text", mealType.EndTime), new { @class = "form-control endTime" })
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => mealType.BufferTime, new SelectList(ViewBag.TimeList, "Value", "Text", mealType.BufferTime), new { @class = "form-control bufferTime" })
+                    </td>
+
+                    <td>
+                        @Html.HiddenFor(m => mealType.MealTimeID, new { @class = "form-control mealTimeID" })
+                    </td>
+                </tr>}
+                }
+            </tbody>
+        </table>
+        <!-- Update button -->
+        <button class="btn btn-primary" type="button" id="btnSubmit">Update</button>
+    </form>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        // Attach change event listener to start time dropdowns
+        //$('#mealTimeTable tbody').on('change', '.startTime', function () {
+        //    validateTimeRange($(this).closest('tr'));
+        //});
+
+        document.getElementById("enableAllCheckbox").addEventListener("change", function () {
+            // Retrieve the value of the checkbox
+            var checkboxValue = this.checked;
+
+            // Log the new checkbox value (true/false)
+            console.log("Checkbox value changed to:", checkboxValue);
+        });
+
+        // Attach change event listener to end time dropdowns
+        $('#mealTimeTable tbody').on('change', '.endTime', function () {
+            debugger;
+            validateTimeRange($(this).closest('tr'));
+        });
+
+        $('#btnSubmit').click(function () {
+            debugger;
+            // Show loader
+            $('#spinner').show();
+            // Create an array to store meal time configurations
+            var mealTimeConfigurations = [];
+            // Loop through each row in the table
+            $('#mealTimeTable tbody tr').each(function () {
+                debugger;
+                // Create an object to store data for each row
+                var mealTimeConfig = {
+                    StartTime: $(this).find('.startTime').val(),
+                    EndTime: $(this).find('.endTime').val(),
+                    BufferTime: $(this).find('.bufferTime').val(),
+
+                    MealTimeID: $(this).find('.mealTimeID').val()
+                };
+
+                // Push the meal time configuration object to the array
+                mealTimeConfigurations.push(mealTimeConfig);
+            });
+
+            var checkboxValue = document.getElementById("enableAllCheckbox").checked;
+
+            var sysConfigDetails = {
+                SysConfigID: "@ViewBag.sysConfigData[0].SysConfigID",
+                Key: "@ViewBag.sysConfigData[0].Key",
+                DataType: "@ViewBag.sysConfigData[0].Datatype",
+                Value: checkboxValue.toString()
+            };
+            console.log("Object updated:", sysConfigDetails);
+            // Make AJAX call to the controller
+            $.ajax({
+                url: 'Show',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ mealTimeConfigurations: mealTimeConfigurations, sysConfigDetails }),
+                success: function (response) {
+                    debugger;
+                    // Hide loader
+                    $('#spinner').hide();
+                    // Display a success message using Toastr
+                    // Show alert message on success
+                    alert('Meal Time Updated Successfully');
+                    // Handle success response, if needed
+                    console.log('Update successful');
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    // Hide loader
+                    $('#spinner').hide();
+                    // Handle error response, if needed
+                    console.error('Error occurred:', error);
+                }
+            });
+        });
+
+    });
+    // Function to validate time range for a specific row
+    function validateTimeRange(row) {
+        debugger;
+        // Get start time and end time for the current row
+        var startTime = row.find('.startTime').val();
+        var endTime = row.find('.endTime').val();
+
+        // Convert start time and end time strings to Date objects
+        var startDate = new Date("2000-01-01 " + startTime);
+        var endDate = new Date("2000-01-01 " + endTime);
+
+        // Check if start time is greater than or equal to end time
+        if (startDate > endDate) {
+            // Display error message for the current row
+            //row.find('.error').text("Start time must be earlier than End time");
+            alert('To Time should be greater then From Time');
+            return false;
+        } else {
+            // Clear error message for the current row
+            row.find('.error').text("");
+            return true;
+        }
+    }
+</script>
+
+<!--<div>-->
+<!-- Enable checkbox -->
+<!--<label style="font-size: medium; font-weight: 800;">
+    @ViewBag.sysConfigData[0].Key
+    <input type="checkbox" id="enableAllCheckbox" value="@ViewBag.sysConfigData[0].Value"  @(ViewBag.sysConfigData[0].Value == "true" ? "checked='checked'" : "") />
+</label>
+<form id="mealTimeForm">
+    <table class="table" id="mealTimeTable">
+        <thead>
+            <tr>
+                <th>Meal Type</th>
+                <th>From Time</th>
+                <th>To Time</th>
+                <th>Buffer Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.MealTimeConfigListDetails != null)
+            {
+                foreach (var mealType in Model.MealTimeConfigListDetails)
+                {
+                    <tr>
+                        <td>@mealType.MealType</td>
+                        <td>
+                            @Html.DropDownListFor(m => mealType.StartTime, new SelectList(ViewBag.TimeList, "Value", "Text", mealType.StartTime), new { @class = "form-control startTime" })
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(m => mealType.EndTime, new SelectList(ViewBag.TimeList, "Value", "Text", mealType.EndTime), new { @class = "form-control endTime" })
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(m => mealType.BufferTime, new SelectList(ViewBag.TimeList, "Value", "Text", mealType.BufferTime), new { @class = "form-control bufferTime" })
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>-->
+<!-- Update button -->
+<!--<button class="btn btn-primary" type="button" style="margin-left:0px;width:80px" id="btnSubmit">Update</button>
+    </form>
+</div>-->

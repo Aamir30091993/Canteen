@@ -1,0 +1,111 @@
+﻿@model MoodMeter.ViewModel.UserViewModel
+@using MoodMeter.ViewModel;
+
+@{
+    var _ModuleListWebGrid = new WebGrid(Model.LocationDetails, canPage: false, canSort: false);
+    int rowIndex = 0;
+}
+<style type="text/css">
+    .grey {
+        color: gray !important;
+    }
+
+    .blue {
+        color: blue !important;
+    }
+    .header {
+        background: #012056;
+        color: white;
+    }
+</style>
+<div id="gridModuleList" style="padding-right: 15px;padding-left: 0px;">
+    @{string strDataModel = _ModuleListWebGrid.GetHtml(
+                         headerStyle: "header",
+                         footerStyle: null,
+                         alternatingRowStyle: "even",
+                         selectedRowStyle: null,
+                         rowStyle: "odd",
+                         caption: null,
+                         displayHeader: true,
+                         fillEmptyRows: false,
+                         emptyRowCellValue: null,
+                         htmlAttributes: new { id = "tblPageAccessView", @class = "display table dataTable", style = "width: 100%; cellspacing: 0;margin-top:0px;overflow:auto" },
+
+            columns:
+                 _ModuleListWebGrid.Columns(
+
+
+                 _ModuleListWebGrid.Column
+                 (null, null, format: @<text>
+    @{
+        rowIndex = rowIndex + 1;
+    }
+    <input type="hidden" name="IDHidden" value="@rowIndex" />
+                </text>),
+
+_ModuleListWebGrid.Column
+ ("", format: @<text>
+    @*<input type="hidden" id="hdnPageID" value="@item.PageID" />*@
+
+    @Html.HiddenFor(m => m.LocationDetails[rowIndex - 1].LocationID, new { @class = "hdfLocationID", id = "hdfLocationID" })
+    @Html.HiddenFor(m => m.LocationDetails[rowIndex - 1].UserID, new { @class = "hdfUserID", id = "hdfUserID" })
+    @Html.HiddenFor(m => m.LocationDetails[rowIndex - 1].LocationName, new { @class = "hdfLocationName", id = "hdfLocationName" })
+
+</text>, canSort: false),
+
+_ModuleListWebGrid.Column
+("Locations", format:
+@<text>
+
+    @Html.LabelFor(m => m.LocationDetails[rowIndex - 1].LocationName, Model.LocationDetails[rowIndex - 1].LocationName.ToString(), new { id = "lblLocationName" })
+
+</text>, canSort: false),
+_ModuleListWebGrid.Column
+("{Access}", format:
+@<text>
+    @Html.CheckBoxFor(m => m.LocationDetails[rowIndex - 1].Access, new { @checked = @item.Access, @class = "edit-mode chbAccess", id = "chbAccess", @title = "Access" })
+
+</text>, canSort: false))).ToHtmlString();
+
+string strDataModelAccess = MvcHtmlString.Create(strDataModel.Replace("{Access}", "<input type='checkbox' id='HeaderPageAccessAccess'><span> Access <span>")).ToHtmlString();
+@MvcHtmlString.Create(strDataModelAccess);
+    }
+
+
+</div>
+
+
+<script type="text/javascript">
+    $('.chbAccess').on('change', function () {
+        debugger;
+        var couter = 0;
+        $('#tblPageAccessView').find('.chbAccess').each(function () {
+            if ($(this)[0].checked == true) {
+                couter++;
+            }
+        });
+        if ($('#tblPageAccessView').find('.chbAccess').length == couter) {
+            $('#HeaderPageAccessAccess')[0].checked = true;
+        }
+        else {
+            $('#HeaderPageAccessAccess')[0].checked = false;
+        }
+    });
+    $('#HeaderPageAccessAccess').on('change', function () {
+        debugger;
+        var strcheck = $(this)[0].checked;
+        $('#tblPageAccessView').find('.chbAccess').each(function () {
+            $(this)[0].checked = strcheck;
+        });
+    });
+
+</script>
+<script type="text/javascript">
+    function checkclassname() {
+        var arr = document.getElementsByClassName("commonclass");
+        for (var i = 0; i < arr.length; i++) {
+            arr[i].value = false;
+            arr[i].checked = false;
+        }
+    }
+</script>

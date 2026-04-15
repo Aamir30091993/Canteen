@@ -1,0 +1,725 @@
+﻿@using GCC_Canteen.Models;
+@using GCC_Canteen.ViewModel;
+@using GCC_Canteen.App_Code;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript">
+        var uri = window.location.toString();
+        if (uri.indexOf("?") > 0) {
+            var clean_uri = uri.substring(0, uri.indexOf("?"));
+            // window.history.replaceState({}, document.title, clean_uri);
+        }
+    </script>
+
+    <title>GCC CANTEEN</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta charset="UTF-8">
+    @*<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>*@
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyActDPvA-NaNkzaAbdaqEirXnK3bzR6KwI"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    @*<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>*@
+    @Styles.Render("https://fonts.googleapis.com/css?family=Roboto:400,300,500,700")
+    @Styles.Render("~/assets/plugins/pace-master/themes/blue/pace-theme-flash.css")
+    @*@Styles.Render("~/assets/plugins/uniform/css/uniform.default.min.css")*@
+    @Styles.Render("~/assets/plugins/bootstrap/css/bootstrap.min.css")
+    @Styles.Render("~/assets/plugins/fontawesome/css/font-awesome.css")
+    @Styles.Render("~/assets/plugins/line-icons/simple-line-icons.css")
+    @Styles.Render("~/assets/plugins/offcanvasmenueffects/css/menu_cornerbox.css")
+    @Styles.Render("~/assets/plugins/waves/waves.min.css")
+    @Styles.Render("~/assets/plugins/switchery/switchery.min.css")
+    @Styles.Render("~/assets/plugins/3d-bold-navigation/css/style.css")
+    @Styles.Render("~/assets/plugins/slidepushmenus/css/component.css")
+    @Styles.Render("~/assets/plugins/datatables/css/jquery.datatables.min.css")
+    @Styles.Render("~/assets/plugins/datatables/css/jquery.datatables_themeroller.css")
+    @Styles.Render("~/assets/plugins/x-editable/bootstrap3-editable/css/bootstrap-editable.css")
+    @Styles.Render("~/assets/plugins/bootstrap-datepicker/css/datepicker3.css")
+    <script src="@Url.Content("~/assets/plugins/jquery/jquery-2.1.3.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/jquery-ui/jquery-ui.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
+    <!-- Theme Styles -->
+    @Styles.Render("~/assets/css/modern.css")
+    @Styles.Render("~/assets/css/themes/white.css")
+    @Styles.Render("~/assets/js/jquery-picklist-ie7.css")
+    @Styles.Render("~/assets/css/custom.css")
+    @Styles.Render("~/assets/js/jquery-picklist.css")
+
+    <script src="@Url.Content("~/assets/plugins/3d-bold-navigation/js/modernizr.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/offcanvasmenueffects/js/snap.svg-min.js" )" type="text/javascript"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        div#spinner {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            background: url(../assets/img/ajax-loader-circle-thickbox.gif) no-repeat center rgba(35,31,31,0.4);
+            text-align: center;
+            padding: 45px;
+            font: normal 16px Tahoma, Geneva, sans-serif;
+            z-index: 2;
+            overflow: auto;
+            text-align: center;
+        }
+
+        .HeaderTextLeft {
+            text-align: left;
+        }
+
+        .HeaderTextRight {
+            text-align: right;
+        }
+
+        .HeaderTextCenter {
+            text-align: center;
+        }
+
+        .ItemTextLeft {
+            text-align: left;
+        }
+
+        .ItemTextRight {
+            text-align: right;
+        }
+
+        .ItemTextCenter {
+            text-align: center;
+        }
+
+        .group, #example2_length, #example2_filter {
+            display: none;
+        }
+
+
+        #accordion-first .accordion-group {
+            margin-bottom: 10px;
+        }
+
+        #accordion-first .accordion-heading, #accordion-first .accordion-toggle:hover, #accordion-first .accordion-heading .accordion-toggle.active {
+            background: none repeat scroll 0% 0% transparent;
+        }
+
+        #accordion-first .accordion-heading {
+            border-bottom: 0px none;
+            font-size: 16px;
+        }
+
+            #accordion-first .accordion-heading .accordion-toggle {
+                display: block;
+                cursor: pointer;
+                padding: 5px 0px !important;
+                color: #080a4a;
+                outline: medium none !important;
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+                #accordion-first .accordion-heading .accordion-toggle.active em {
+                    background-color: #080a4a;
+                }
+
+                #accordion-first .accordion-heading .accordion-toggle > em {
+                    background-color: #080a4a;
+                    /*border-radius: 100px;*/
+                    color: #FFF;
+                    font-size: 14px;
+                    height: 22px;
+                    line-height: 22px;
+                    margin-right: 10px;
+                    text-align: center;
+                    width: 22px;
+                }
+
+        .info-tool + .tooltip > .tooltip-inner {
+            background-color: #0071b5;
+            color: #FFFFFF;
+            border-radius: 10px;
+            padding: 5px;
+            font-size: 13px;
+            width: 300px;
+            opacity: 1;
+            text-align: left;
+        }
+
+        .tooltip-image {
+            cursor: pointer;
+            margin-top: -1px;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+       /* .circle {
+            width: 100px;
+            height: 50px;
+            background-color: blue;
+            border-radius: 0 0 50px 50px;
+            margin: 0 2px;
+        }
+
+            .circle:nth-child(odd) {
+                background-color: #ffffff;
+            }
+
+            .circle:nth-child(even) {
+                background-color: #f8f8f8;
+            }*/
+    </style>
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            debugger;
+            $("#hdfSearchURL").val(window.location.href.toString());
+        });
+
+        function SetLinkURL(obj, paging) {
+            debugger;
+            $("#hdfSearchURL").val();
+            for (var url = 0; url < $("#" + obj + " thead tr th a").length; url++) {
+                $("#" + obj + " thead tr th a")[url].href = $("#hdfSearchURL").val().split('?').length == 2 ? ($("#" + obj + " thead tr th a")[url].href.toString()).replace($("#" + obj + " thead tr th a")[url].href.toString().split('?')[0], $("#hdfSearchURL").val().split('?').length == 2 ? ($("#hdfSearchURL").val().split('?')[0]) : ($("#hdfSearchURL").val())) + '&' + ($("#hdfSearchURL").val().split('?')[1]) : ($("#" + obj + " thead tr th a")[url].href.toString()).replace($("#" + obj + " thead tr th a")[url].href.toString().split('?')[0], ($("#hdfSearchURL").val()));
+                //$("#" + obj + " thead tr th a")[url].href = ($("#" + obj + " thead tr th a")[url].href.toString()).replace($("#" + obj + " thead tr th a")[url].href.toString().split('?')[0], $("#hdfSearchURL").val());
+            }
+            debugger;
+            if ($("#" + obj + " tbody tr").length > 1) {
+                for (var sepr = 0; sepr < $("#" + paging + " .pagination")[0].childNodes.length; sepr++) {
+                    var herf = $("#" + paging + " .pagination")[0].childNodes[sepr].children[0].href.replace($("#" + paging + " .pagination")[0].childNodes[sepr].children[0].href.split('?')[0], $("#hdfSearchURL").val());
+
+                    var indexof = herf.indexOf('?');
+                    var length = herf.length;
+                    if (indexof > 0) {
+                        $("#" + paging + " .pagination")[0].childNodes[sepr].children[0].href = herf.substring(0, indexof + 1) + herf.substring(indexof + 1, length).replace('?', '&');
+
+                    } else {
+                        $("#" + paging + " .pagination")[0].childNodes[sepr].children[0].href = $("#" + paging + " .pagination")[0].childNodes[sepr].children[0].href.replace($("#" + paging + " .pagination")[0].childNodes[sepr].children[0].href.split('?')[0], $("#hdfSearchURL").val());
+                    }
+                }
+            }
+            removefooter();
+        }
+    </script>
+    <script>
+        $(document).on('mouseenter', '#link-foot', function () {
+            $('#link').hide();
+            $('#link1').show();
+        })
+        $(document).on('mouseleave', '#link-foot', function () {
+            $('#link').show();
+            $('#link1').hide();
+        })
+
+
+        $(document).on('mouseleave', '#twt-foot', function () {
+            $('#twt').show();
+            $('#twt1').hide();
+        })
+        $(document).on('mouseenter', '#twt-foot', function () {
+            $('#twt').hide();
+            $('#twt1').show();
+        })
+
+        $(document).on('mouseenter', '#Facebook-foot', function () {
+            $('#fcbk').hide();
+            $('#fcbk1').show();
+        })
+        $(document).on('mouseleave', '#Facebook-foot', function () {
+            $('#fcbk').show();
+            $('#fcbk1').hide();
+        })
+
+        $(document).on('mouseenter', '#Youtube-foot', function () {
+            $('#ytbe').hide();
+            $('#ytbe1').show();
+        })
+        $(document).on('mouseleave', '#Youtube-foot', function () {
+            $('#ytbe').show();
+            $('#ytbe1').hide();
+        })
+
+        $(document).on('mouseenter', '#Instagram-foot', function () {
+            $('#inst').hide();
+            $('#inst1').show();
+        })
+        $(document).on('mouseleave', '#Instagram-foot', function () {
+            $('#inst').show();
+            $('#inst1').hide();
+        })
+    </script>
+    <script>
+        (function ($) {
+            "use strict"
+            // Accordion Toggle Items
+            var iconOpen = 'fa fa-minus',
+                iconClose = 'fa fa-plus';
+
+            $(document).on('show.bs.collapse hide.bs.collapse', '.accordion', function (e) {
+                debugger;
+                var $target = $(e.target)
+                $target.siblings('.accordion-heading')
+                    .find('em').toggleClass(iconClose + ' ' + iconOpen);
+                if (e.type == 'show') {
+                    $target.prev('.accordion-heading').find('.accordion-toggle').addClass('active');
+                    $target.prev('.accordion-heading').find('.accordion-toggle').attr("title", "Collapse");
+                }
+                if (e.type == 'hide') {
+                    $(this).find('.accordion-toggle').not($target).removeClass('active');
+                    $(this).find('.accordion-toggle').not($target).attr("title", "Expand");
+                }
+            });
+
+        })(jQuery);
+
+    </script>
+    <script>
+        $(function () {
+            $("#checkAll").change(function () {
+                $("input:checkbox").prop('checked', $(this).prop("checked"));
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#ckbCheckAll").click(function () {
+                $(".checkBoxClass").prop('checked', $(this).prop('checked'));
+            });
+        });
+    </script>
+    <script>
+        $(function () {
+            $(".searchPanelDatepicker").datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd M yyyy',
+            });
+            $(".searchPanelMonthDatepicker").datepicker({
+                viewMode: 'years',
+                minViewMode: "months",
+                format: 'M yyyy',
+                todayHighlight: 'TRUE',
+                autoclose: true,
+            });
+        });
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            var SessionTimeOut = $('#hdfSessionTimeOut').val();
+            setTimeout(function () {
+                startTime = new Date();
+                setTimeout(display, 1000);
+            }, (Number(SessionTimeOut) - 60) * 1000);
+        });
+
+        var startTime;
+        function display() {
+            debugger;
+            var SessionTimeOut = $('#hdfSessionTimeOut').val();
+            var endTime = new Date();
+            var timeDiff = endTime - startTime;
+
+            timeDiff /= 1000;
+            var seconds = Math.round(timeDiff % 60);
+            timeDiff = Math.floor(timeDiff / 60);
+
+            seconds = 60 - seconds;
+            if (seconds == 1) {
+                $("#sessionpopup").modal({
+                    backdrop: 'static',
+                    keyboard: true
+
+                });
+                $("#time").hide();
+            }
+            $("#time").text(seconds + " seconds remaining");
+
+            setTimeout(display, 1000);//1000=1 sec
+        }
+
+    </script>
+
+</head>
+<body class="page-header-fixed page-sidebar-fixed" style=" overflow: hidden;">
+    <div id="spinner" style="z-index:999999999;">
+    </div>
+
+    <div id="sessionpopup" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <p>Your session has timed out. Please login again to continue using the intranet portal.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnSessionTImeOutLogin">Login</button>
+                    <input type="hidden" value="2400" id="hdfSessionTimeOut" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="myModal80" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="myModal80">Are you sure you want to Delete this Record ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnConfirmDelete">Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    @*<input type="hidden" value="" id="hdfDeletedRecordID" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="myModal81" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p>Record Saved Successfully.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnConfirmSave">Ok</button>
+                    <input type="hidden" value="" id="hdfSavedRecordID" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="myModal82" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <p>Record Updated Successfully.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnConfirmUpdate">Ok</button>
+                    <input type="hidden" value="" id="hdfUpdatedRecordID" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="myModal83" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <span>Record Already Exists !!!</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnModalPopClose">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="myModal84" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <span>Record Deleted Successfully !!!</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnConfirmDelete1">Close</button>
+                    <input type="hidden" value="" id="hdfDeletedRecordID" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="myModalPromoter_info" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <h4>Work flow for Promoter</h4>
+                    <ul>
+                        <li style="margin-bottom:10px;">Once the client submitted his feedback score, immediately the system check if the score is between 9 to 10, then the survey is tagged as Promoter. Based on its deal size, the system allocates closed-loop analysis to the respective HOD/MD.</li>
+                        <li style="margin-bottom:10px;">On the 1st of the following month, the Promoter email will be sent to HOD/MD with a separate email to the Global Admin.</li>
+                        <li style="margin-bottom:10px;">For 3 continuous days, the system sends a reminder email to the respective HOD/MD if no action on closed-loop analysis.</li>
+                        <li style="margin-bottom:10px;">On the 8th of every month, a final reminder email is send to the HOD/MD and CC’ed to COO for non-compliance.</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnConfirmDelete1">Close</button>
+                    <input type="hidden" value="" id="hdfDeletedRecordID" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="myModalDetractor_info" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <h4>Work flow for Detractor</h4>
+                    <ul>
+                        <li style="margin-bottom:10px;">Once the client submitted his feedback score, immediately the system check if the score is between 0 to 6, then the survey is tagged as detractor. Based on the deal size, the system allocates closed-loop analysis and request investigation from the respective HOD/MD by sending an email to them at GMT 5 AM.</li>
+                        <li style="margin-bottom:10px;">For 3 continuous days, the system sends a reminder email to the respective HOD/MD, if no action on closed-loop analysis.</li>
+                        <li style="margin-bottom:10px;">On the 8th day, a final reminder email is send to the HOD/MD and CC’ed to COO for non-compliance.</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnConfirmDelete1">Close</button>
+                    <input type="hidden" value="" id="hdfDeletedRecordID" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="search-form" action="#" method="GET">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control search-input" placeholder="Search...">
+            <span class="input-group-btn">
+                <button class="btn btn-default close-search waves-effect waves-button waves-classic" type="button"><i class="fa fa-times"></i></button>
+            </span>
+        </div><!-- Input Group -->
+
+    </form><!-- Search Form -->
+    <main class="page-content content-wrap">
+        <div class="navbar">
+            <div class="navbar-inner" style="background-color:white;background-repeat: no-repeat;background-size: cover;">
+                <div class="sidebar-pusher">
+                    <a href="javascript:void(0);" class="waves-effect waves-button waves-classic push-sidebar">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                </div>
+                <div class="logo-box">
+                    <img src="~/assets/Images/logo-new.png" style="padding-top: 2px; padding-bottom: 2px; width: 180px; /* height: 52px; */ background: #ff8b00;">
+                    <a href="index.html" class="logo-text"><span><!--img src="assets/img/logo.png"--></span></a>
+                </div><!-- Logo Box -->
+                <div class="search-button">
+                    <a href="javascript:void(0);" class="waves-effect waves-button waves-classic show-search"></a>
+                </div>
+                <div class="topmenu-outer">
+                    <div class="top-menu">
+                        <ul class="nav navbar-nav navbar-left" style="margin-left: -10px">
+                            @*<li>
+                                <a href="javascript:void(0);" class="waves-effect waves-button waves-classic sidebar-toggle"><i class="fa fa-bars" style="font-size:16px;color: white;"></i></a>
+                            </li>*@
+
+                            @*<li>
+                                <a href="javascript:void(0);" class="waves-effect waves-button waves-classic toggle-fullscreen"><i class="fa fa-expand" style="font-size:16px;color: white;"></i></a>
+                            </li>*@
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a id="time" href="#"></a></li>
+                            @*<li><a href="https://enps.colliersasia.com" target="_blank" style="font-size:12px;">eNPS</a></li>*@
+                            <li class="">
+                                <a href="~/UserAccount/Login">
+                                    @*@if (Session["UserName"] != null)
+                                    {*@
+
+                                    <span class="material-symbols-outlined" style="color:#fff; font-size:20px"> logout </span> 
+                                        @*@Html.Hidden("UserID", Session["UserID"].ToString())*@
+                                    @*}
+                                    else
+                                    {
+                                        <script>
+                                            //window.location.href = "../UserAccount/Login";
+                                        </script>
+                                    }*@
+                                    @*<img class="img-circle avatar" src="~/assets/Images/avatar1.png" width="40" height="40" alt="">*@
+                                </a>
+                                <!--<ul class="dropdown-menu dropdown-list" role="menu">-->
+                                    @*<li role="presentation"><a href="~/MyProfile/Show"><i class="fa fa-user"></i>Profile</a></li>*@
+                                   @* <li role="presentation"><a href="~/UserAccount/ChangePassword"><i class="fa fa-lock"></i>Change Password</a></li>*@
+                                    <!--<li role="presentation"><a href="~/UserAccount/Login"><i class="fa fa-sign-out m-r-xs"></i>Log out</a></li>
+                                </ul>-->
+                            </li>
+
+                        </ul><!-- Nav -->
+                    </div><!-- Top Menu -->
+                </div>
+            </div>
+        </div><!-- Navbar -->
+        <!-- Menu -->
+        @*@{ Html.RenderAction("GetUserModuleRights", "Menu");}*@
+        @{
+            //MMModel db = new MMModel();
+            //List<UserAccessDetails> userRights = new List<UserAccessDetails>();
+            //ViewBag.NavigationMenu = db.Database.SqlQuery<UserAccessDetails>("exec [spGetUserAccessRights] @UserID = {0}", Session["UserID"]).ToList();
+            //ViewBag.NavigationMenu = db.Database.SqlQuery<UserAccessDetails>("exec [spGetUserAccessRights] @UserID = {0}", 3208).ToList();
+            @* ViewBag.AllSiteAccess = db.Database.SqlQuery<SelectListItem>("exec [spGetUserSiteAccess] @ActionID = 1, @UserID = {0}", Session["UserID"]).ToList();
+                ViewBag.SelectedSiteAccess = db.Database.SqlQuery<SelectListItem>("exec [spGetUserSiteAccess] @ActionID = 2, @UserID = {0}", Session["UserID"]).ToList();*@
+
+        }
+        @Html.Partial("_NavigationMenu")
+        <!-- Page Sidebar -->
+    <div class="page-inner">
+        @*<div class="page-title" style="padding: 7px;">
+            <h3>@ViewBag.PageName</h3>
+
+            <div class="page-breadcrumb">
+
+                @if (ViewBag.PageName == "Dashboard")
+                {
+                    <h4>@ViewBag.DashboardPage</h4>
+                }
+                else
+                {
+                    @Session["BreadCrumb"]
+                }
+            </div>
+
+        </div>*@
+        <!--<div class="pattern">-->
+            @*<div class="circle"><img src="../assets/images/b-1.jpg" /></div>*@
+            <!--<div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+        </div>-->
+        <div id="main-wrapper" style="margin: 8px; background-size: cover; width: 100%; height: 100vh;">
+            <div class="row">
+                <div class="col-md-12">
+                    @RenderBody()<!-- Row -->
+                </div><!-- Main Wrapper -->
+                <div class="page-footer">
+                    <div class="col-md-5" style="margin-top:12px">
+                        <p>© GCC CANTEEN</p>
+                    </div>
+
+                    @Html.Hidden("hdfSearchURL")
+                </div>
+            </div><!-- Page Inner -->
+        </div>
+    </div>
+    </main><!-- Page Content -->
+
+
+    <script type="text/javascript">
+        $('#btnConfirmDelete1').click(function (e) {
+            debugger;
+            window.location.href = $('#hdfDeletedRecordID').val();
+        });
+        $.ajaxSetup({
+            statusCode: {
+                401: function () {
+                    debugger;
+                    $("#sessionpopup").modal({
+                        backdrop: 'static',
+                        keyboard: true
+                    });
+                    //window.location.href = "/UserAccount/login";
+                }
+            }
+        });
+        $.ajaxSetup({ headers: { "SessionIdentifier": $('#hdfSessionIdentifier').val() } })
+        $.ajaxSetup({
+            statusCode: {
+                500: function () {
+                    //window.location.href = "/UserAccount/login";
+                }
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+        $('#btnConfirmSave').click(function (e) {
+            window.location.href = $('#hdfSavedRecordID').val();
+        });
+    </script>
+    <script type="text/javascript">
+        $('#btnConfirmUpdate').click(function (e) {
+            window.location.href = $('#hdfUpdatedRecordID').val();
+        });
+    </script>
+
+    <script type="text/javascript">
+        $('#btnVendorYes').click(function (e) {
+            window.location.href = $('#hdfVendorYesID').val();
+        });
+
+        $('#btnVendorNo').click(function (e) {
+            window.location.href = $('#hdfVendorNoID').val();
+        });
+
+        $('.form-control').on('focusout', function () {
+
+            var replaced = $(this).val().replace(/ +/g, " ");
+            $(this).val(replaced);
+
+        });
+
+    </script>
+
+    <script type="text/javascript">
+        $(document).on('click', '.editRecord', function () {
+            debugger;
+            $('#spinner').show();
+            if ($('#FilterSession').val() != "") {
+                var href = $(this).attr('href');
+                href = href + "&FilterSession=" + $('#FilterSession').val();
+                $(this).attr('href', href);
+            }
+        });
+        $(document).on('click', '#btnSessionTImeOutLogin', function () {
+            debugger;
+            //window.location.href = "../UserAccount/Login";
+        });
+    </script>
+
+    <!-- Javascripts -->
+
+    <script src="@Url.Content("~/assets/plugins/pace-master/pace.min.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/jquery-blockui/jquery.blockui.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/switchery/switchery.min.js" )" type="text/javascript"></script>
+
+    <script src="@Url.Content("~/assets/plugins/offcanvasmenueffects/js/classie.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/offcanvasmenueffects/js/main.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/waves/waves.min.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/3d-bold-navigation/js/main.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/jquery-mockjax-master/jquery.mockjax.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/moment/moment.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/datatables/js/jquery.datatables.min.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/x-editable/bootstrap3-editable/js/bootstrap-editable.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/js/modern.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/js/pages/table-data.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js" )" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js" )" type="text/javascript"></script>
+
+    <script src="@Url.Content("~/assets/js/jquery-picklist.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/js/jquery-picklist2.js")" type="text/javascript"></script>
+
+</body>
+
+
+</html>

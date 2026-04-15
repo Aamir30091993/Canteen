@@ -1,0 +1,274 @@
+﻿@model GCC_Canteen.ViewModel.ImportUserViewModel
+@{
+    ViewBag.Title = "New";
+    Layout = "~/Views/Shared/_GCC_CanteenMaster.cshtml";
+    ViewBag.PageName = "Upload Staff (Temp/Visitor)";
+}
+
+<link rel="Stylesheet" type="text/css" href="/assets/css/select2.css" />
+<link href="/assets/css/modern.css" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/jquery.validate.min.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        $("#datepicker").datepicker({
+            format: "dd/mm/yyyy",
+            autoclose: true
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function (e) {
+        $("#divClearAttachment").hide();
+    });
+</script>
+
+@using (Ajax.BeginForm("Save",
+            new AjaxOptions
+            {
+                OnSuccess = "AddSuccess",
+                OnFailure = "AddSuccess",
+                HttpMethod = "POST"
+            }))
+{
+    <div id="myModalSave" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Data Imported Successfully!!!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnClose">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<style>
+    /* CSS for making the table header sticky */
+    #tempStaff thead {
+        position: sticky;
+        top: 0;
+        background-color: #f9f9f9;
+        z-index: 10;
+    }
+</style>
+@using (Ajax.BeginForm("New", "ImportUser", new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnSuccess = "ShowGrids",
+    LoadingElementId = "spinner"
+
+}))
+{
+    <div class="panel panel-white">
+        <div class="panel-body-seperate" id="section2" style="margin-left:10px">
+            <div class="row">
+                <div id="accordion-first" class="clearfix" style="padding-left:0px">
+                    <div class="accordion" id="accordion1">
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne">
+                                    <em class="icon-fixed-width fa fa-minus"></em>Import Details
+                                </a>
+                            </div>
+                            <div style="height: auto;" id="collapseOne" class="accordion-body collapse in">
+                                <div class="row">
+
+                                    <form>
+                                        <div class="col-md-12">
+                                            <div class="form-group" id="child-element1">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        @Html.HiddenFor(m => m._ImportUserHdr.SessionIdentity, new { id = "SessionIdentity" })
+                                                        @*@Html.LabelFor(m => m._ImportVerticalwiseMonthlyTargetHdr.LOBID)
+                                                            @Html.DropDownListFor(m => m._ImportVerticalwiseMonthlyTargetHdr.LOBID, ViewBag.ImportVerticalwiseMonthlyTargetLOB == null ? new List<SelectListItem> { new SelectListItem { Value = "", Text = "" } } : (IEnumerable<SelectListItem>)ViewBag.ImportVerticalwiseMonthlyTargetLOB, "--Select--", new { id = "ddlLOB", @class = "form-control text-mandatory" })<br>
+                                                            @Html.ValidationMessageFor(m => m._ImportVerticalwiseMonthlyTargetHdr.LOBID, "", new { @class = "text-danger" })*@
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+                                            @*<div class="form-group">
+                                                    @Html.LabelFor(m => m._ImportVerticalwiseMonthlyTargetHdr.FinYear)
+                                                    @Html.DropDownListFor(m => m._ImportVerticalwiseMonthlyTargetHdr.FinYear, ViewBag.ImportVerticalwiseMonthlyTargetFinYear == null ? new List<SelectListItem> { new SelectListItem { Value = "", Text = "" } } : (IEnumerable<SelectListItem>)ViewBag.ImportVerticalwiseMonthlyTargetFinYear, "--Select--", new { id = "ddlFinYear", @class = "form-control text-mandatory" })<br>
+                                                    @Html.ValidationMessageFor(m => m._ImportVerticalwiseMonthlyTargetHdr.FinYear, "", new { @class = "text-danger" })
+                                                </div>*@
+                                        </div>
+                                        @*<div class="col-md-6">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(m => m._ImportUserHdr.ImportDate)
+                                                    @Html.TextBoxFor(m => m._ImportUserHdr.ImportDate, new { @class = "form-control text-mandatory", @disabled = "disabled" })
+                                                    @Html.HiddenFor(m => m._ImportUserHdr.ImportDate)
+                                                    @Html.ValidationMessageFor(m => m._ImportUserHdr.ImportDate, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>*@
+                                        <div class="col-md-6">
+                                            <label>Sample Format</label><br>
+                                            <a href="@ViewBag.SampleFormat"><i class="fa fa-download" style="font-size: 35px;margin-left:25px;"></i></a>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        @Html.HiddenFor(m => m._ImportUserHdr.AttachmentSessionKey, new { id = "AttachmentSessionKey", @value = "" })
+                                                        <label>Import File</label>
+                                                        <div class="file-program">
+                                                            <div class="col-sm-12" style="padding-left: 0px;margin-bottom: 15px;">
+                                                                <div class="row">
+                                                                    <div class="col-md-3">
+                                                                        @Html.TextBoxFor(m => m.Attachment, new { type = "file", @accept = ".xls,.xlsx" })
+                                                                        @*@Html.HiddenFor(m => m._ImportUserAttach.Status, new { @id = "hdfAttachmentStatus" })*@
+                                                                        @Html.ValidationMessageFor(m => m.Attachment, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                    <div class="col-md-3" id="divClearAttachment">
+                                                                        <a id="clearAttachemnt" data-toggle="modal" data-target="#myModal2" style="cursor:pointer" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false"><i class="fa fa-times" title="Delete"></i></a>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*<div class="col-md-6">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(m => m._ImportUserHdr.Remark)
+                                                    @Html.TextAreaFor(m => m._ImportUserHdr.Remark, new { id = "ImportUser_Remark", @rows = 2, @class = "form-control" })
+                                                </div>
+                                            </div>*@
+                                    </form>
+                                    <br>
+
+                                </div>
+                            </div>
+
+                            <br>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" type="submit" style="margin-left:0px;width:80px" id="btnProcess" disabled="@ViewData["WriteAccess"]">Process</button>
+                @*<button class="btn btn-primary" type="button" style="margin-left:15px;width:80px" id="btnCancel">Back</button>*@
+                @*<button class="btn btn-primary" type="button" style="margin-left:15px;width:100px;display:none;" id="btnExport">Export XLS</button>*@
+                <button class="btn btn-primary" type="button" style="margin-left:15px;width:100px;" id="btnView">View</button>
+
+            </div>
+        </div>
+        <div id="parentView">
+                @Html.Partial("_ParentDiv", Model)
+            </div>
+    </div>
+}
+
+<!-- Table to display data -->
+
+<div class="panel panel-default" style="overflow: auto; height: calc(100vh - 345px);">
+    <div class="panel-heading">
+        <h3 class="panel-title">Temp Staff Data</h3>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped" id="tempStaff">
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>User Name</th>
+                    <th>Employee Code</th>
+                    <th>Card No</th>
+                    <th>User ID</th>
+                    <th>Employee Designation</th>
+                    <th>Team Name</th>
+                    <th>Reporting To</th>
+                    <th>Reporting To Emp Code</th>
+                    <th>Reporting To Designation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be dynamically populated via AJAX -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="~/Scripts/JSScript/ImportUser.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script type="text/javascript">
+
+    $('#btnCancel').click(function (e) {
+        e.preventDefault();
+        window.location.href = 'List';
+    })
+
+
+    //$('#btnView').click(function (e) {
+    //    e.preventDefault();
+    //    window.location.href = 'ViewData';
+    //})
+    $('#btnView').click(function (e) {
+        e.preventDefault();
+       $.ajax({
+    url: '/Canteen/ImportUser/ViewData',  // Replace ControllerName with your actual controller name
+    type: 'GET',
+    dataType: 'json',
+    success: function(response) {
+        if (response.success) {
+            // Assuming response.data contains your ImportUserViewModel
+            var tableData = response.data._ImportTempViewData;
+
+            // Clear existing table rows
+            $('#tempStaff tbody').empty();
+
+            // Populate table with updated data
+            $.each(tableData, function(index, item) {
+                var row = $('<tr>');
+                row.append($('<td>').text(item.Location));
+                row.append($('<td>').text(item.UserName));
+                row.append($('<td>').text(item.EmpCode));
+                row.append($('<td>').text(item.CardNo));
+                row.append($('<td>').text(item.UserID));
+                row.append($('<td>').text(item.EmpDesignation));
+                row.append($('<td>').text(item.TeamName));
+                row.append($('<td>').text(item.ReportingTo));
+                row.append($('<td>').text(item.ReportingToEmpCode));
+                row.append($('<td>').text(item.ReportingToDesignation));
+
+                $('#tempStaff tbody').append(row);
+            });
+        } else {
+            console.error('Error: ' + response.message);
+        }
+    },
+    error: function(xhr, status, error) {
+        console.error('Error fetching data: ', error);
+    }
+});
+    });
+
+    function ShowGrids(data) {
+        debugger;
+        if (data == "") {
+            alert('User Data Upload Successfully');
+        } else {
+            alert(data);
+        }
+        //if (data > 0) {
+        //    window.location.href = '/ImportUser/Edit?ID=' + data;
+        //    //$('#btnProcess').hide();
+        //    //$("#ddlLOB").attr("disabled", "disabled");
+        //    //$("#ddlFinYear").attr("disabled", "disabled");
+        //    //$("#ImportCorporateABCwiseTarget_Remark").attr("disabled", "disabled");
+        //    //$("#btnExport").css("display","inline-block");
+        //    //$("#parentView").html(data);
+        //}
+        //else {
+        //    alert('User Data Upload Successfully');
+        //}
+    }
+
+</script>

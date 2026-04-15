@@ -1,0 +1,305 @@
+﻿@{
+    string SessionIdentifier = TempData["SessionIdentifier"].ToString();
+    System.Data.DataSet ds = new System.Data.DataSet();
+    if (Session["MISReportData_" + SessionIdentifier] != null)
+    {
+
+        ds = (System.Data.DataSet)Session["MISReportData_" + SessionIdentifier];
+    }
+    var ParameterValue = "";
+
+}
+@if (ds != null)
+{
+    <div class="row">
+        <div style="margin-right: 20px;margin-top:20px;float:right" id="action-button">
+            <button id="hide_mobileview1" class="btn btn-primary XLS" type="button" style="width:120px;margin-left:15px;">Export To XLS</button>
+            <button id="btnBack" class="btn btn-primary Back" type="button" style="width:80px;margin-left:15px;">Back</button>
+        </div>
+    </div><br />
+    @*<div id="action-button">
+            <button class="Print" type="button">Print</button>
+            <button class="XLS" type="button">Export to XLS</button>
+        </div>*@
+    <div class="col-md-12" style="padding-right:0px !important;">
+        <table border="0" style="border:0px solid #4E5E6A;width:100%;" align="center">
+            <tr>
+                <td id="ParamValues">
+                    @if (Session["ParamValues_" + SessionIdentifier] != null)
+                    {
+                        @MvcHtmlString.Create(@Session["ParamValues_" + SessionIdentifier].ToString());
+                    }
+
+                </td>
+            </tr>
+        </table>
+    </div>
+    for (int u = 0; u < ds.Tables.Count; u++)
+    {
+        System.Data.DataTable dt = ds.Tables[u];
+
+        if (dt.Rows.Count > 0)
+        {
+            if (dt.Columns[0].ColumnName.ToLower() == "tablename")
+            {
+                <div class="col-md-12" style="padding-right:0px !important;">
+                    <table border="0" style="border:0px solid #4E5E6A;width:100%;" align="center">
+                        <tr>
+                            <td colspan="@dt.Columns.Count" id="TableName" style="font-weight:bold;text-decoration:underline;">
+                                @MvcHtmlString.Create(@dt.Rows[0][0].ToString())
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            }
+            if (dt.Columns[1].ColumnName.ToLower() == "tablesnapshot" || dt.Columns[0].ColumnName.ToLower() == "tablesnapshot")
+            {
+                <div class="col-md-12" style="padding-right:0px !important;">
+                    <table border="0" style="border:0px solid #4E5E6A;width:100%;" align="center">
+                        <tr>
+                            <td colspan="@dt.Columns.Count" id="snapshot" style="font-weight:bold;">
+                                @if (dt.Columns[1].ColumnName.ToLower() == "tablesnapshot")
+                                {
+                                    @MvcHtmlString.Create(@dt.Rows[0][1].ToString())
+                                }
+                                else
+                                {
+                                    @MvcHtmlString.Create(@dt.Rows[0][0].ToString())
+                                }
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            }
+
+            int count = 0;
+            count = dt.Columns.Contains("TableName") == false ?
+                                                (dt.Columns.Contains("TableSnapshot") == false ?
+                                                    (dt.Columns.Contains("Style") == false ?
+                                                        (dt.Columns.Contains("Grouping") == false ? 0 : 1)
+                                                    : (dt.Columns.Contains("Grouping") == false ? 1 : 2))
+                                                : (dt.Columns.Contains("Style") == false ?
+                                                        (dt.Columns.Contains("Grouping") == false ? 1 : 2)
+                                                    : (dt.Columns.Contains("Grouping") == false ? 2 : 3)))
+                                            : (dt.Columns.Contains("TableSnapshot") == false ?
+                                                    (dt.Columns.Contains("Style") == false ?
+                                                        (dt.Columns.Contains("Grouping") == false ? 1 : 2)
+                                                    : (dt.Columns.Contains("Grouping") == false ? 2 : 3))
+                                                : (dt.Columns.Contains("Style") == false
+                                                    ? (dt.Columns.Contains("Grouping") == false ? 2 : 3) :
+                                                    (dt.Columns.Contains("Grouping") == false ? 3 : 4)));
+
+            <div class="panel-body" style="margin-left:-6px;">
+                <div class="row">
+
+                    <div class="col-md-12" style="padding-right:0px !important;">
+                        <div style="overflow-x:scroll;">
+                            <table cellpadding="2" align="center" class="table table-striped table-bordered gridresults">
+                                <thead>
+                                    <tr>
+                                        @{
+                                            string cols = "";
+                                            string[] col = new string[dt.Columns.Count];
+                                            for (int i = count; i < dt.Columns.Count; i++)
+                                            {
+
+                                                cols = cols == "" ? dt.Columns[i].ColumnName : cols
+                                                    + "§" + dt.Columns[i].ColumnName;
+                                            }
+                                            col = cols.Split('§');
+                                            for (int i = count; i < dt.Columns.Count; i++)
+                                            {
+                                                for (int c = i + 1; c < col.Length; c++)
+                                                {
+                                                    if (col[c].IndexOf(dt.Columns[i].ColumnName.ToString()) > -1)
+                                                    {
+                                                        int lenD = dt.Columns[i].ColumnName.Length;
+                                                        int lenc = col[c].Length;
+                                                        if (lenc - lenD <= 2 && lenc - lenD > 0)
+                                                        {
+                                                            col[c] = dt.Columns[i].ColumnName.ToString();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        @for (int i = 0; i < col.Length; i++)
+                                        {
+                                            <th>
+                                                @col[i].ToString()
+                                            </th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (dt.Rows.Count == 0)
+                                    {
+                                        <tr>
+                                            <th colspan="@dt.Columns.Count">
+                                                <label>No Records Found!!</label>
+                                            </th>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        for (int i = 0; i < dt.Rows.Count; i++)
+                                        {
+                                            string style = "";
+                                            if (dt.Columns.Contains("Style"))
+                                            {
+                                                style = dt.Rows[i]["Style"].ToString();
+                                            }
+                                            if (dt.Columns.Contains("Grouping") && dt.Rows[i]["Grouping"].ToString() != null && dt.Rows[i]["Grouping"].ToString() != "")
+                                            {
+                                                <tr role="row" style="@style">
+                                                    @for (int j = count; j < dt.Columns.Count; j++)
+                                                    {
+                                                        var tdstylearr = (dt.Rows[i]["Style"].ToString()).Split(';');
+                                                        var tdstyle = "";
+                                                        for (int r = 0; r < tdstylearr.Length; r++)
+                                                        {
+                                                            if (tdstylearr[r].Split(':')[0].ToLower() == "background")
+                                                            {
+                                                                tdstyle = tdstylearr[r].Split(':')[1];
+                                                            }
+                                                        }
+                                                        if (j == count)
+                                                        {
+                                                            if (dt.Columns[j].DataType.Name.ToLower().Contains("int") || dt.Columns[j].DataType.Name.ToLower().Contains("decimal"))
+                                                            {
+                                                                <td style="text-align:right;border-right-color:@tdstyle;border-left-color:@tdstyle;">
+                                                                    @MvcHtmlString.Create(@dt.Rows[i]["Grouping"].ToString())
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td style="border-right-color:@tdstyle;border-left-color:@tdstyle;">
+                                                                    @MvcHtmlString.Create(@dt.Rows[i]["Grouping"].ToString())
+                                                                </td>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (j == dt.Columns.Count)
+                                                            {
+                                                                if (dt.Columns[j].DataType.Name.ToLower().Contains("int") || dt.Columns[j].DataType.Name.ToLower().Contains("decimal"))
+                                                                {
+                                                                    <td style="text-align:right;border-left-color:@tdstyle;">
+                                                                        @MvcHtmlString.Create(@dt.Rows[i][j].ToString())
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="border-left-color:@tdstyle;">
+                                                                        @MvcHtmlString.Create(@dt.Rows[i][j].ToString())
+                                                                    </td>
+                                                                }
+
+                                                            }
+                                                            else
+                                                            {
+                                                                if (dt.Columns[j].DataType.Name.ToLower().Contains("int") || dt.Columns[j].DataType.Name.ToLower().Contains("decimal"))
+                                                                {
+                                                                    <td style="text-align:right;border-right-color:@tdstyle;border-left-color:@tdstyle;">
+                                                                        @MvcHtmlString.Create(@dt.Rows[i][j].ToString())
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="border-right-color:@tdstyle;border-left-color:@tdstyle;">
+                                                                        @MvcHtmlString.Create(@dt.Rows[i][j].ToString())
+                                                                    </td>
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                </tr>
+                                            }
+                                            else
+                                            {
+                                                <tr role="row" style="@style">
+                                                    @for (int j = count; j < dt.Columns.Count; j++)
+                                                    {
+                                                        if (dt.Rows[i][j].ToString().Contains("</td>"))
+                                                        {
+                                                            @MvcHtmlString.Create(@dt.Rows[i][j].ToString())
+                                                        }
+                                                        else
+                                                        {
+                                                            if (dt.Columns[j].DataType.Name.ToLower().Contains("int") || dt.Columns[j].DataType.Name.ToLower().Contains("decimal"))
+                                                            {
+                                                                <td style="text-align:right;">
+                                                                    @MvcHtmlString.Create(@dt.Rows[i][j].ToString())
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>
+                                                                    @MvcHtmlString.Create(@dt.Rows[i][j].ToString())
+                                                                </td>
+                                                            }
+                                                        }
+                                                    }
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            int count = 0;
+            count = dt.Columns.Contains("TableName") == false ?
+                                                (dt.Columns.Contains("TableSnapshot") == false ?
+                                                    (dt.Columns.Contains("Style") == false ?
+                                                        (dt.Columns.Contains("Grouping") == false ? 0 : 1)
+                                                    : (dt.Columns.Contains("Grouping") == false ? 1 : 2))
+                                                : (dt.Columns.Contains("Style") == false ?
+                                                        (dt.Columns.Contains("Grouping") == false ? 1 : 2)
+                                                    : (dt.Columns.Contains("Grouping") == false ? 2 : 3)))
+                                            : (dt.Columns.Contains("TableSnapshot") == false ?
+                                                    (dt.Columns.Contains("Style") == false ?
+                                                        (dt.Columns.Contains("Grouping") == false ? 1 : 2)
+                                                    : (dt.Columns.Contains("Grouping") == false ? 2 : 3))
+                                                : (dt.Columns.Contains("Style") == false
+                                                    ? (dt.Columns.Contains("Grouping") == false ? 2 : 3) :
+                                                    (dt.Columns.Contains("Grouping") == false ? 3 : 4)));
+            <table cellpadding="2" align="center" class="table table-striped table-bordered gridresults">
+                <tr>
+                    @for (int i = count; i < dt.Columns.Count; i++)
+                    {
+                        <th>
+                            @dt.Columns[i].ColumnName
+                        </th>
+                    }
+                </tr>
+                <tr>
+                    <th colspan="@dt.Columns.Count" style="text-align:center">
+                        <label>No Records Found!!</label>
+                    </th>
+                </tr>
+            </table>
+        }
+    }
+    <div class="row">
+        <div style="padding:15px 0 0 15px;margin-right: 20px;margin-bottom:20px;float:right" id="action-button">
+            <button id="hide_mobileview2" class="btn btn-primary XLS" type="button" style="width:120px;margin-left:15px;">Export To XLS</button>
+            <button id="btnBack" class="btn btn-primary Back" type="button" style="width:80px;margin-left:15px;">Back</button>
+        </div>
+    </div>
+}
+<script>
+    debugger
+    $('.Back').click(function () {
+        window.location.href = 'Show';
+    })
+</script>
+
+

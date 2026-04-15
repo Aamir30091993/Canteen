@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<style>
+    .material-symbols-outlined {
+        color: #012056;
+        font-size:35px;
+    }
+    .menu.accordion-menu li {
+        list-style-type: none;
+        margin: 18px 0px;
+        border-bottom: 1px solid #ddd;
+    }
+    .menu.accordion-menu li a {
+        margin-bottom: 13px;
+    }
+
+</style>
+<body>
+    <div class="page-sidebar sidebar">
+        <div class="page-sidebar-inner slimscroll">
+
+            <ul class="menu accordion-menu">
+
+                <li>
+                    <a href="@Url.Action("Show", "Dashboard")">
+                        <span class="material-symbols-outlined">
+                            bar_chart_4_bars
+                        </span>
+                        <p style="margin-top:0px;">Data Extract</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Show", "MealTimeConfig")">
+                        <span class="material-symbols-outlined">
+                            pending_actions
+                        </span>
+                        <p style="margin-top:0px;">Meal Time Config</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("New", "ImportUser")">
+                        <span class="material-symbols-outlined">
+                            upload_file
+                        </span>
+                        <p style="margin-top:0px;">Upload Staff (Temp/Visitor)</p>
+                    </a>
+                </li>
+
+            </ul>
+
+        </div><!-- Page Sidebar Inner -->
+      
+    </div>
+</body>
+</html>

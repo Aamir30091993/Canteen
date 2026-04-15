@@ -1,0 +1,23 @@
+﻿@model GCC_Canteen.ViewModel.ImportUserListModel
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_GCC_CanteenMaster.cshtml";
+    ViewBag.PageName = "User Upload";
+}
+
+<div class="panel panel-white">
+    @Html.Partial("_SearchPanel", Model.gridSettingData.WebGridColumnSetting)
+    <div class="table-responsive">
+        <div id="ctrlGrid1Panel" style="padding:15px">
+            @Html.Partial("_GridView", Model.ImportUserList, new ViewDataDictionary { { "ColumnsSetting", Model.gridSettingData.WebGridColumns }, { "WebGridSettings", Model.gridSettingData.WebGridSetting }, { "WriteAccess", ViewBag.WriteAccess } })
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+       $(document).on("click", "#btnAddNew", function () {
+        document.location = '@Url.Action("New", "ImportUser")';
+    });
+</script>

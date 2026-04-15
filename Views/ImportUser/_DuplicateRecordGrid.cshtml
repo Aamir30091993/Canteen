@@ -1,0 +1,122 @@
+﻿@model GCC_Canteen.ViewModel.ImportUserViewModel
+@{
+    WebGrid webGrid;
+    webGrid = new WebGrid(Model._ImportUserDuplicateRecords, canPage: false, canSort: false, ajaxUpdateContainerId: "InValidGrid");
+}
+<div id="gridValidRecord">
+    @if (Model._ImportUserDuplicateRecords != null)
+    {
+        @webGrid.Table(
+                 headerStyle: "Header",
+                 footerStyle: null,
+                 alternatingRowStyle: "even",
+                 selectedRowStyle: null,
+                 rowStyle: "odd",
+                 caption: null,
+                 displayHeader: true,
+                 fillEmptyRows: false,
+                 emptyRowCellValue: null,
+                 htmlAttributes: new { @class = "display table dataTable", style = "width: 100%; cellspacing: 0;margin-top:0px;overflow:auto", id = "validGrid" },
+  columns:
+    webGrid.Columns(
+        webGrid.Column("Remark", format:
+                                                    @<text>
+                                                        <font color="red">
+                                                            @item.RemarkStatus
+                                                        </font>
+                                                    </text>, canSort: false),
+                                                                                                   webGrid.Column("Location", format:
+                                                                                        @<text>
+                                                                                            @item.Location
+                                                                                        </text>, canSort: false),
+                                                                                                                                                       webGrid.Column("User Name", format:
+                                                                                                                                                @<text>
+                                                                                                                                                    @item.UserName
+                                                                                                                                                </text>, canSort: false),
+                                                                                                                                                                                                               webGrid.Column("Emp Code", format:
+                                                                                                                                                                                                        @<text>
+                                                                                                                                                                                                            @item.EmpCode
+                                                                                                                                                                                                        </text> , canSort: false),
+                                                                                                                                                                                                                                                                       webGrid.Column("User ID", format:
+                                                                                                                                                                                                                                                                @<text>
+                                                                                                                                                                                                                                                                    @item.LoginID
+                                                                                                                                                                                                                                                                </text> , canSort: false),
+                                                                                                                                                                                                                                                                                                                               webGrid.Column("DOJ", format:
+                                                                                                                                                                                                                                                                                                                        @<text>
+                                                                                                                                                                                                                                                                                                                            @item.DOJ
+                                                                                                                                                                                                                                                                                                                        </text>, canSort: false),
+
+                                                                                                                                                                                                                                                                                                                                                                                       webGrid.Column("DOL", format:
+                                                                                                                                                                                                                                                                                                                                                                                @<text>
+                                                                                                                                                                                                                                                                                                                                                                                    @item.DOL
+                                                                                                                                                                                                                                                                                                                                                                                </text>, canSort: false),
+                                                                                                                                                                                                                                                                                                                                                                                                       webGrid.Column("Email Address", format:
+                                                                                                                                                                                                                                                                                                                                                                                        @<text>
+                                                                                                                                                                                                                                                                                                                                                                                            @item.EmailAddress
+                                                                                                                                                                                                                                                                                                                                                                                        </text>, canSort: false),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                       webGrid.Column("Emp Designation", format:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                @<text>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    @item.EmpDesignation
+                                                                                                                                                                                                                                                                                                                                                                                                                                                </text>, canSort: false),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            webGrid.Column("Team Name", format:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @<text>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @item.TeamName
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </text>, canSort: false),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             webGrid.Column("Reporting To", format:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @<text>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @item.ReportingTo
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </text>, canSort: false),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    webGrid.Column("Reporting To Emp Code", format:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @<text>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @item.ReportingToEmpCode
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </text>, canSort: false),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 webGrid.Column("Reporting To Designation", format:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @<text>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @item.ReportingToDesignation
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </text>, canSort: false)))
+
+        @*<div style="padding-left:20px; padding-right:20px" id="gridValidRecordPager">
+                @WPFL.App_Code.WebGridExtensions.PagerList(webGrid, WebGridPagerModes.All, null, "", "", null, 3, "pagination")
+            </div>*@
+    }
+    else
+    {
+        <table id="example2" class="display table dataTable" style="width: 100%; cellspacing: 0;margin-top:0px;overflow:auto">
+            <thead>
+                <tr style="background-color:#e2e2e2">
+                    <th>Remark</th>
+                    <th>Location</th>
+                    <th>User Name</th>
+                    <th>Emp Code</th>
+                    <th>User ID</th>
+                    <th>DOJ</th>
+                    <th>DOL</th>
+                    <th>Email Address</th>
+                    <th>Emp Designation</th>
+                    <th>Team Name</th>
+                    <th>Reporting To</th>
+                    <th>Reporting To Emp Code</th>
+                    <th>Reporting To Designation</th>
+
+
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    }
+</div>
+<style>
+    .Header {
+        background-color: #e2e2e2;
+        width: 100%;
+    }
+
+        .Header a {
+            font-family: 'Roboto', sans-serif !important;
+            font-size: 14px;
+            color: #4E5E6A;
+        }
+</style>
+
+

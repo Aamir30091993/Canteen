@@ -1,0 +1,205 @@
+﻿@using System.Collections
+@using System.Web.Mvc;
+@using GCC_Canteen.ViewModel;
+@using GCC_Canteen.App_Code;
+
+@model IEnumerable
+
+<style>
+    .width {
+        width: 1000px;
+    }
+</style>
+@{
+    List<WebGridColumn> columns = new List<WebGridColumn>();
+    columns = ViewData["ColumnsSetting"] as List<WebGridColumn>;
+
+    GridSettings gridSetting = new GridSettings();
+    gridSetting = ViewData["WebGridSettings"] as GridSettings;
+
+    var strHeaderTextStyle = ViewData["HeaderTextStyle"] == null ? "" : ((List<string>)ViewData["HeaderTextStyle"]).Count > 0 ? ((List<string>)ViewData["HeaderTextStyle"])[0].ToString() : "";
+
+    // int RecordCount = (int)ViewData["RecordCount"];
+    bool Disabled = (bool)ViewData["WriteAccess"] == true ? false : true;
+    var grid = new WebGrid((IEnumerable<dynamic>)Model, canPage: gridSetting.AllowPaging, canSort: true, rowsPerPage: gridSetting.DefaultRecCnt, ajaxUpdateContainerId: "gridContent", ajaxUpdateCallback: "callbackctrlGrid1Pager();removefooter();");
+    bool ExportAllowed = false;
+    //columns.ForEach(c => c.Header = c.Header + " " + @GCC_Canteen.App_Code.WebGridExtensions.SortDirection(ref grid, c.ColumnName).ToString());
+    columns.ForEach(c => c.Header = c.Header + " " + @GCC_Canteen.App_Code.WebGridExtensions.SortDirection(ref grid, c.ColumnName).ToString());
+    if (gridSetting.IsExportAllowed == "1")
+    {
+        ExportAllowed = true;
+    }
+    }
+
+<div id="gridContent">
+    @Html.Hidden("HeaderTextStyle", strHeaderTextStyle, new { id = "hdfHeaderTextStyle" })
+    @Html.Hidden("dir", grid.SortDirection)
+    @Html.Hidden("col", grid.SortColumn)
+    @{
+        string html = grid.Table(
+
+         headerStyle: "Header",
+                        footerStyle: null,
+                        rowStyle: "odd",
+                        alternatingRowStyle: "even",
+                        selectedRowStyle: "webgrid-selected-row",
+                        caption: null,
+                        displayHeader: true,
+                        fillEmptyRows: false,
+                        emptyRowCellValue: null,
+                        columns: columns,
+                        exclusions: null,
+                        footer: @<div>
+    @{
+        var m = grid.TotalRowCount;
+        if (m <= 0)
+        {
+            <table class="footer">
+                <tr><td>No Record Found</td></tr>
+            </table>
+        }
+    }
+</div>,
+htmlAttributes: new { id = gridSetting.GridControl, style = " width: 100%; cellspacing: 0;", @class = "display table dataTable" }
+
+
+).ToString();
+@MvcHtmlString.Create(html.Replace("{CheckBoxHeader}", "<input type='checkbox' id='chkHeader1' />"));
+    }
+    @{
+        string id = "#" + @gridSetting.GridControl + "Panel";
+        string pagerDivName = @gridSetting.GridControl + "Pager";
+    }
+                                 <div style="padding-left:20px; padding-right:20px;padding-bottom:20px;" id="@pagerDivName">
+
+                                     @GCC_Canteen.App_Code.WebGridExtensions.PagerList(grid, WebGridPagerModes.All, null, "", "", null, 5, "pagination")
+                                     @{
+                                         int PageID = gridSetting.PageID;
+
+                                         <button type="button" class="btn btn-success m-b-sm editRecord" id="btnAddNew" disabled=@Disabled style="float:left;margin: 25px 0;">
+                                             <i class="fa fa-plus"></i>
+                                             Add New
+                                         </button>
+
+                                         @*if(PageID !=4)
+            {
+                <button type="button" class="btn btn-success m-b-sm editRecord" id="btnAddNew" disabled=@Disabled style="float:left;margin: 25px 0;">
+                    <i class="fa fa-plus"></i>
+                    Add New
+                </button>
+            }*@
+
+
+                                         @*if (ExportAllowed == true)
+            {
+                <button type="button" class="btn btn-success m-b-sm" id="ExportListXLS" style="float:left;margin-right: 15px;margin-top:25px;margin-left:5px;">
+                    Export XLS
+                </button>
+            }*@
+                                     }
+                                     @{
+                                         int pageID = gridSetting.PageID;
+                                     }
+
+
+
+                                 </div>
+</div>
+
+<div id="divBrowserWindowName" style="visibility:hidden;">
+    <input type="hidden" id="hdfSessionIdentifier" value=@Convert.ToString(TempData["SessionIdentifier"])>
+    <input type="hidden" id="FilterSession" value=@ViewBag.FilterSession>
+    @*@Html.Hidden("FilterSession", new { id = "FilterSession" ,value=ViewBag.FilterSession})*@
+</div>
+<style>
+    .Header {
+        background-color: #012056;
+        font-size: 13px;
+        width: 100%;
+        color: #ffffff;
+    }
+
+        .Header a {
+            font-family: 'Roboto', sans-serif !important;
+            font-size: 13px;
+            color: #ffffff;
+        }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger;
+        removefooter();
+        var strHeaderTextStyle = $('#hdfHeaderTextStyle').val().split('$');
+        $('.Header a').each(function () {
+            debugger;
+            for (var strCount = 0; strCount < strHeaderTextStyle.length; strCount++) {
+                if ($(this)[0].innerText.trim() == strHeaderTextStyle[strCount].split('|')[0]) {
+                    $(this).parents('th')[0].className = strHeaderTextStyle[strCount].split('|')[1];
+                }
+            }
+        })
+    });
+
+    function removefooter() {
+        //debugger;
+        var rowCount = $("#gridContent table:first > tbody > tr").length;
+        if (rowCount > 0) {
+            $("#gridContent table:first > tfoot").remove();
+        }
+    }
+
+    $('.Header').each(function () {
+        var direction = $('@id').find('#dir').val();
+        var sortCol = $('@id').find('#col').val();
+        if (sortCol == "") {
+            $('@id .Header').each(function () {
+                $(this).find('a').append("<i class=\"fa fa-sort\" style=\"float:none\"></i>");
+            })
+        }
+        else {
+            $(this).find('a').remove("<i class=\"fa fa-sort\" style=\"float:none\"></i>", '');
+        }
+    })
+
+</script>
+<script type="text/javascript">
+
+    $(document).on("click", "#chkHeader1", function () {
+        debugger;
+        $('input[class="chkRow1"]').prop("checked", $(this).prop("checked"));
+    });
+
+    $(document).on("click", ".chkRow1", function () {
+        debugger;
+        var grid = $(this).closest("table");
+        var chkHeader = $("#chkHeader1", grid);
+        if (!$(this).is(":checked")) {
+            $("td", $(this).closest("tr")).removeClass("selected");
+            chkHeader.removeAttr("checked");
+        } else {
+            if ($(".chkRow1", grid).length == $(".chkRow1:checked", grid).length) {
+                $('input[id="chkHeader1"]').prop("checked", $(this).prop("checked"));
+            }
+        }
+    });
+
+    //$(document).ready(function () {
+    //    $("#ctrlGrid1Pager ul li.disabled a").removeAttr("href");
+    //});
+
+    //$('#gridContent').load(function () {
+    //    alert("load");
+    //});
+
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        callbackctrlGrid1Pager();
+    });
+
+    function callbackctrlGrid1Pager() {
+        $("#ctrlGrid1Pager ul li.disabled a").removeAttr("href");
+    }
+</script>

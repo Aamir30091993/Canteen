@@ -1,0 +1,322 @@
+﻿@model  GCC_Canteen.ViewModel.UserViewModel
+@{
+    /**/
+
+    ViewBag.PageName = "User";
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_GCC_CanteenMaster.cshtml";
+}
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<link href="/assets/css/modern.css" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/select2.js"></script>
+<link rel="Stylesheet" type="text/css" href="/assets/css/select2.css" />
+<link href="~/assets/css/bootstrap-select.min.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap-select.min.js"></script>
+<script src="~/Scripts/select2.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+
+<div id="divAlertMessage" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p class="AlertMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button id="CloseAlert" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Ajax.BeginForm("New", new AjaxOptions { HttpMethod = "Post", LoadingElementId = "spinner", OnSuccess = "SavedSuccessfully" }))
+{
+    <div class="panel panel-white">
+        <div class="panel-body" id="section10" style="margin-left:10px">
+            <div class="row">
+                <div class="clearfix" id="accordion-first"
+                     style="padding-left:0px">
+                    <div class="accordion" id="accordion11">
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle collapsed"
+                                   data-parent="#accordion11"
+                                   data-toggle="collapse"
+                                   href="#collapseTen">
+                                    <em class="icon-fixed-width fa fa-minus">
+                                    </em>User Details
+                                </a>
+                            </div>
+                            <div class="accordion-body collapse in"
+                                 id="collapseTen">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <form>
+                                            <div class="row">
+                                                @*@Html.HiddenFor(m => m.UserDetails.ID, new { id = "ID" })*@
+                                                @Html.HiddenFor(m => m.UserDetails.ID)
+                                                @Html.HiddenFor(m => m.UserDetails.IsActive)
+                                                @*<div class="col-md-612" style="margin-top:1em;">
+                <input type="hidden" id="FilterSession" value=@ViewBag.FilterSession>
+                @Html.Label("UserID")
+                @Html.TextBoxFor(m => m.UserDetails.ID, new { @class = "form-control text-mandatory" })
+                @Html.ValidationMessageFor(m => m.UserDetails.ID, "", new { @class = "text-danger" })
+            </div>*@
+                                                <div class="col-md-12" style="margin-top:1em;">
+                                                    <input type="hidden" id="FilterSession" value=@ViewBag.FilterSession>
+                                                    @Html.Label("Name")
+                                                    @Html.TextBoxFor(m => m.UserDetails.UserName, new { @class = "form-control text-mandatory", @autocomplete = "off" })
+                                                    @Html.ValidationMessageFor(m => m.UserDetails.UserName, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                @*@Html.HiddenFor(m => m.UserDetails.ID, new { id = "ID" })*@
+                                                <div class="col-md-6" style="margin-top:1em;">
+                                                    <label for="exampleInputPassword1">Location</label>
+                                                    @Html.DropDownListFor(m => m.UserDetails.LocationID, ViewBag.LocationList == null ? new List<SelectListItem>
+                                                    { new SelectListItem { Value = "", Text = "" } } : (IEnumerable<SelectListItem>)ViewBag.LocationList, "--Select--"
+                                                    , new { id = "ddlLocation", @class = "form-control m-b-sm text-mandatory", @style = "width: 100%;color:#999;margin: 0px;" })
+                                                    @Html.ValidationMessageFor(m => m.UserDetails.LocationID, "", new { @class = "text-danger" })
+                                                    @Html.HiddenFor(m => m.UserDetails.LocationID)
+                                                </div>
+                                                <div class="col-md-6" style="margin-top:1em;">
+                                                    <input type="hidden" id="FilterSession" value=@ViewBag.FilterSession>
+                                                    @Html.Label("Employee Code")
+                                                    @Html.TextBoxFor(m => m.UserDetails.EmpCode, new { @class = "form-control text-mandatory", @autocomplete = "off" })
+                                                    @Html.ValidationMessageFor(m => m.UserDetails.EmpCode, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6" style="margin-top:1em;">
+                                                    <input type="hidden" id="FilterSession" value=@ViewBag.FilterSession>
+                                                    <label for="exampleInputPassword1">Role</label>
+                                                    @Html.DropDownListFor(m => m.UserDetails.RoleID, ViewBag.RoleList == null ? new List<SelectListItem>
+                                                    { new SelectListItem { Value = "", Text = "" } } : (IEnumerable<SelectListItem>)ViewBag.RoleList, "--Select--"
+                                                    , new { id = "ddlRole", @class = "form-control m-b-sm text-mandatory", @style = "width: 100%;color:#999;margin: 0px;" })
+                                                    @Html.ValidationMessageFor(m => m.UserDetails.RoleID, "", new { @class = "text-danger" })
+                                                    @Html.HiddenFor(m => m.UserDetails.RoleID)
+                                                </div>
+                                                <div class="col-md-6" style="margin-top:1em;">
+                                                    <input type="hidden" id="FilterSession" value=@ViewBag.FilterSession>
+                                                    @Html.Label("Designation")
+                                                    @Html.TextBoxFor(m => m.UserDetails.Designation, new { @class = "form-control text-mandatory", @autocomplete = "off" })
+                                                    @Html.ValidationMessageFor(m => m.UserDetails.Designation, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6" style="margin-top:1em;">
+                                                    <input type="hidden" id="FilterSession" value=@ViewBag.FilterSession>
+                                                    @Html.Label("Team Name")
+                                                    @Html.TextBoxFor(m => m.UserDetails.TeamName, new { @class = "form-control text-mandatory", @autocomplete = "off" })
+                                                    @Html.ValidationMessageFor(m => m.UserDetails.TeamName, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="col-md-6" style="margin-top:1em;">
+                                                    <input type="hidden" id="FilterSession" value=@ViewBag.FilterSession>
+                                                    <label for="exampleInputPassword1">ReportingTo</label>
+                                                    @Html.DropDownListFor(m => m.UserDetails.ReportingToUserID, ViewBag.ReportingList == null ? new List<SelectListItem>
+                                                    { new SelectListItem { Value = "", Text = "" } } : (IEnumerable<SelectListItem>)ViewBag.ReportingList, "--Select--"
+                                                    , new { id = "ddlReporting", @class = "form-control", @style = "width: 100%;color:#999;margin: 0px;" })
+                                                    @*@Html.ValidationMessageFor(m => m.UserDetails.ReportingToUserID, "", new { @class = "text-danger" })*@
+                                                    @Html.HiddenFor(m => m.UserDetails.ReportingToUserID)
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6" style="margin-top:1em;">
+                                                    @*<div class="form-group">*@
+                                                    @Html.Label("DOJ")
+                                                    @Html.TextBoxFor(m => m.UserDetails.DOJ, new { @class = "form-control text-mandatory", @autocomplete = "off", @style = "width: 100%;color:#999;margin: 0px;" })
+                                                    @Html.ValidationMessageFor(m => m.UserDetails.DOJ, "", new { @class = "text-danger" })
+                                                    @*</div>*@
+                                                </div>
+                                                <div class="col-md-6" style="margin-top:1em;">
+                                                    @*<div class="form-group">*@
+                                                    @Html.Label("DOL")
+                                                    @Html.TextBoxFor(m => m.UserDetails.DOL, new { @class = "form-control", @autocomplete = "off" })
+                                                    @Html.ValidationMessageFor(m => m.UserDetails.DOL, "", new { @class = "text-danger" })
+                                                    @*</div>*@
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6" style="margin-top:1em;">
+                                                    <div class="form-group">
+                                                        @*<input type="hidden" id="FilterSession" value=@ViewBag.FilterSession>*@
+                                                        @Html.Label("LoginID")
+                                                        @Html.TextBoxFor(m => m.UserDetails.LoginID, new { @class = "form-control text-mandatory", @style = "width: 100%;color:#999;margin: 0px;", @autocomplete = "off" })
+                                                        @Html.ValidationMessageFor(m => m.UserDetails.LoginID, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6" style="margin-top:1em;">
+                                                    @*<div class="form-group">*@
+                                                    <input type="hidden" id="FilterSession" value=@ViewBag.FilterSession>
+                                                    @Html.Label("Password")
+                                                    @Html.TextBoxFor(m => m.UserDetails.Password, new { @class = "form-control text-mandatory", @type = "Password", @autocomplete = "off" })
+                                                    @Html.ValidationMessageFor(m => m.UserDetails.Password, "", new { @class = "text-danger" })
+                                                    @*</div>*@
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-left:0px;padding-left:5px;">
+                                                <div class="clearfix" id="accordion-first"
+                                                     style="padding-left:0px">
+                                                    <div class="accordion" id="accordion12">
+                                                        <div class="accordion-group">
+                                                            <div class="accordion-heading">
+                                                                <a class="accordion-toggle collapsed"
+                                                                   data-parent="#accordion12"
+                                                                   data-toggle="collapse"
+                                                                   href="#collapseEleven">
+                                                                    <em class="icon-fixed-width fa fa-minus">
+                                                                    </em>Location Access Rights
+                                                                </a>
+                                                            </div>
+                                                            <div class="accordion-body collapse in"
+                                                                 id="collapseEleven" style="height: auto;" aria-expanded="true">
+                                                                <br />
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        @Html.Partial("_UserAccessRights")
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*<br>*@
+        @*Start of Access Details*@
+      
+        @*End of Access Details*@
+        <br>
+        <div id="action-button" style="padding:15px 0 30px 15px">
+            <button class="btn btn-primary btnSaveClick" type="submit" disabled=@ViewData["UpdateAccess"] style="width:80px">
+                Save
+            </button>
+            <button class="btn btn-primary" id="btnBack" style="margin-left:15px;width:80px">
+                Back
+            </button>
+            @*<button class="btn btn-primary" style="margin-left:15px;width:80px" id="btnDelete" disabled=@ViewData["DeleteAccess"]>
+                    Delete
+                </button>*@
+        </div>
+    </div>
+}
+
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/JSScript/User.js?ver=1"></script>
+<script type="text/javascript">
+
+    @*button save*@
+
+
+    function SavedSuccessfully(data) {
+        debugger;
+        $('#spinner').hide();
+        if (data == "") {
+            $('#myModal81').modal({ backdrop: 'static', keyboard: false });
+            $('#hdfSavedRecordID').val('List');
+        }
+        else {
+            $('#divAlertMessage').modal({ backdrop: 'static', keyword: false });
+            $('.AlertMessage').html(data);
+        }
+    }
+</script>
+<script>
+    setTimeout(function () {
+        debugger;
+        $('#UserDetails_UserName').val('');
+        $('#UserDetails_Password').val('');
+    }, 1000);
+</script>
+<script type="text/javascript">
+
+    $('#btnBack').click(function (e) {
+        debugger;
+        e.preventDefault();
+        window.location.href = 'List';
+    })
+
+    //$('#btnSave').click(function () {
+    //    debugger;
+    //    $('.collapse').addClass('in');
+    //    $('.collapse').attr('aria-expanded', 'true');
+    //    $('.collapse').removeAttr('style');
+    //    $('.accplus').removeClass('fa-plus');
+    //    $('.accplus').addClass('fa-minus');
+    //});
+</script>
+
+@*Access Part*@
+<script>
+    $(document).ready(function () {
+        debugger;
+        var couter = 0;
+        $('#tblPageAccessView').find('.chbAccess').each(function () {
+            if ($(this)[0].checked == true) {
+                couter++;
+            }
+        });
+        if ($('#tblPageAccessView').find('.chbAccess').length == couter) {
+            $('#HeaderPageAccessAccess')[0].checked = true;
+        }
+        else {
+            $('#HeaderPageAccessAccess')[0].checked = false;
+        }
+
+    });
+</script>
+
+@*Save class Location*@
+
+<script>
+    $('.btnSaveClick').click(function (e) {
+        debugger;
+        var $form = $('#form0');
+        if ($form.valid()) {
+            $('#spinner').show();
+            var Errormsg = "";
+            var valid = true;
+            var listSpecific = $('input[type="radio"][value="Specific"]:checked').toArray();
+            if (valid) {
+                var strLocationAccess = "";
+                $("#tblPageAccessView > tbody > tr").each(function () {
+                    debugger;
+                    var LocationID = $(this).find('#hdfLocationID')[0].value;
+                    var Access = $(this).find('#chbAccess')[0].checked == true ? 1 : 0;
+
+                    strLocationAccess = strLocationAccess == "" ? LocationID + ',' + Access : strLocationAccess + '|' + LocationID + ',' + Access;
+                })
+
+                debugger;
+                $.ajax({
+                    url: '/User/UpdateLocationAccess/',
+                    dataType: 'html',
+                    data: JSON.stringify({ UserID: 0, strLocationAccess: strLocationAccess }),
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $('#spinner').hide();
+                    }
+                });
+            }
+            else {
+                $('#spinner').hide();
+                alert(Errormsg);
+                return false;
+            }
+        }
+    });
+</script>
+
+
+
+
