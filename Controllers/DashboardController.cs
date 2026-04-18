@@ -52,6 +52,7 @@ namespace GCC_Canteen.Controllers
 
         public ActionResult Show()
         {
+            // Testing Commmits for Azure DevOps
 
             if (Request.Headers["SessionIdentifier"] == null)
                 SessionIdentifier = DateTime.UtcNow.ToString().Replace('/', '_').Replace(':', '_').Replace(' ', '_');
